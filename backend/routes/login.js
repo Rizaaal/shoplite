@@ -17,8 +17,6 @@ router.post('/', async (req, res) => {
     //check password, else return error
     if (password === user.password) {
 
-    console.log(process.env.SECRET_KEY)
-
     const token = jwt.sign(
       { id: user.id, username: user.username },
       process.env.SECRET_KEY,

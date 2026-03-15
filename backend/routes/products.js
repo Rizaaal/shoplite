@@ -1,4 +1,5 @@
 const express = require('express');
+const { protectedRoute } = require('../middlewares/protectedRoute');
 const router = express.Router();
 
 const mockProducts = [
@@ -98,7 +99,7 @@ router.get('/category/:category', (req, res) => {
 // PROTECTED ROUTES
 
 // post a product
-router.post('/', (req, res) => {
+router.post('/', protectedRoute, (req, res) => {
   try {
     const { name, description, price, category, qty } = req.body;
     const newItem = {
@@ -118,7 +119,7 @@ router.post('/', (req, res) => {
 })
 
 // delete a product by id
-router.delete('/:id', (req, res) => {
+router.delete('/:id', protectedRoute, (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const removedProductIndex = mockProducts.findIndex(product => {
