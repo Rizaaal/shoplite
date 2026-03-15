@@ -80,3 +80,10 @@ p {
 app-product-card:hover {
   cursor: pointer;
 }
+/* fine */
+
+.carousel img {
+  width: 100%;
+  height: 350px;
+  object-fit: contain;
+}
