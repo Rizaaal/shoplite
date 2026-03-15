@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { mockUsers } = require('./users');
+const { protectedRoute } = require('../middlewares/protectedRoute');
+const jwt = require('jsonwebtoken');
 
 //login
 router.post('/', async (req, res) => {
@@ -14,7 +16,16 @@ router.post('/', async (req, res) => {
 
     //check password, else return error
     if (password === user.password) {
-      res.json(user)
+
+    console.log(process.env.SECRET_KEY)
+
+    const token = jwt.sign(
+      { id: user.id, username: user.username },
+      process.env.SECRET_KEY,
+      { expiresIn: '1h' }
+    );
+
+      res.json({ token })
     } else {
       res.status(401).json(unauthorizedError)
     }
