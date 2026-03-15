@@ -3,7 +3,7 @@ const router = express.Router();
 const { mockUsers } = require('./users');
 
 //login
-router.get('/', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { password, email } = req.body;
     const user = mockUsers.find(user => user.email === email)
