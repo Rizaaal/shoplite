@@ -1,0 +1,37 @@
+nav {
+  background-color: #1E293B;
+}
+
+nav .container {
+  margin: 0 1rem 0 1rem;
+  max-width: 1400px;
+  margin: auto;
+}
+
+ul {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+}
+
+svg {
+  margin-right: 0.5rem;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  color: white;
+  padding: 1.2rem
+}
+
+.logo {
+  font-weight: 600;
+}
+
+.service li:hover,
+.utilities .login:hover {
+  color: #06B6D4;
+  cursor: pointer
+}
