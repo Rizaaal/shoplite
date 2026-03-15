@@ -1,6 +1,5 @@
 .info {
   border-top: 1px solid rgb(229, 231, 235);
-  ;
   background-color: #F8FAFC;
 }
 
@@ -8,6 +7,8 @@
 /* inizio */
 h3 {
   margin-bottom: 0.5rem;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 p {
@@ -48,6 +49,34 @@ p {
 /* section: product-card */
 /* inizio */
 .product-card-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   max-width: 1400px;
   margin: auto;
+  padding: 3rem 0 3rem 0;
+}
+
+.card-product-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.product-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem
+}
+
+.product-card-header p {
+  color: rgb(37, 99, 235);
+}
+.product-card-header p:hover {
+  color: rgb(6, 182, 212);
+  cursor: pointer;
+}
+
+app-product-card:hover {
+  cursor: pointer;
 }
