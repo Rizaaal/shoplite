@@ -1,0 +1,47 @@
+.chi-siamo-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: minmax(100px, auto);
+  align-items: center;
+  padding: 4rem 0 4rem 0;
+  max-width: 1400px;
+  margin: auto;
+}
+
+img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+}
+
+h1 {
+  font-weight: normal;
+  margin-bottom: 1rem;
+}
+
+p {
+  color: color-mix(in oklab, #0F172A 70%, transparent);
+  line-height: 1.7rem;
+}
+
+.statistic {
+  display: flex;
+  margin-top: 3rem;
+}
+
+.statistic>div {
+  margin-right: 6rem;
+}
+
+.statistic .number {
+  font-size: 30px;
+  font-weight: 600;
+  color: rgb(37, 99, 235);
+}
+
+.statistic>div p {
+  font-size: 14px;
+}
+
+.description {
+  padding-right: 3rem;
+}

@@ -1,0 +1,41 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+}
+
+nav {
+    background-color: #1E293B;
+}
+
+nav .container {
+    margin: 0 1rem 0 1rem;
+}
+
+nav ul {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+}
+
+nav ul li {
+    color: white;
+    padding: 1.2rem
+}
+
+nav ul .logo,
+nav ul .utilities .carello {
+    display: flex;
+    align-items: center;
+}
+
+nav ul .logo {
+    font-weight: 600;
+}
+
+nav ul .logo svg,
+nav ul .utilities .carello svg {
+    margin-right: 0.5rem;
+}
