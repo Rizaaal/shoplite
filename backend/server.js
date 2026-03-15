@@ -6,6 +6,7 @@ const { usersRouter } = require('./routes/users');
 const { loginRouter } = require('./routes/login');
 // const db = require("./db")
 
+require('dotenv').config();
 const app = express();
 const port = 8080;
 
