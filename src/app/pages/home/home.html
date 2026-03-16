@@ -160,10 +160,10 @@
       </div>
 
       <div class="card-product-container">
-        @if (api.products.isLoading()) {
+        @if (productsService.products.isLoading()) {
           <p>...loading</p>
-        } @else if (api.products.error()) {
-          <p>{{ api.products.error() }}</p>
+        } @else if (productsService.products.error()) {
+          <p>{{ productsService.products.error() }}</p>
         } @else {
           @for (product of products(); track $index) {
             <app-product-card [product]="product" />

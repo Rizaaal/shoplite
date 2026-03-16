@@ -4,7 +4,7 @@ import { Product } from '../components/shared/product-card/product-card';
 @Injectable({
   providedIn: 'root',
 })
-export class Api {
+export class ProductsService {
   private baseUrl = 'http://localhost:8080/api';
 
   products = resource<Product[], string>({

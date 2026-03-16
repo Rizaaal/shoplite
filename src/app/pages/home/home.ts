@@ -1,7 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { ProductCard } from '../../components/shared/product-card/product-card';
 import { ChiSiamo } from '../../components/shared/chi-siamo/chi-siamo';
-import { Api } from '../../services/api';
+import { ProductsService } from '../../services/products.service';
 import { NgClass } from '../../../../node_modules/@angular/common/types/_common_module-chunk';
 
 @Component({
@@ -11,10 +11,10 @@ import { NgClass } from '../../../../node_modules/@angular/common/types/_common_
   styleUrl: './home.css',
 })
 export class Home {
-  api = inject(Api);
+  productsService = inject(ProductsService);
 
   products = computed(() => {
-    const products = this.api.products;
+    const products = this.productsService.products;
 
     // check if defined
     if (!products.hasValue()) return [];
