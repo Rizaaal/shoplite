@@ -5,9 +5,57 @@ section {
   justify-content: center;
   min-height: 100vh;
   background-color: #F8FAFC;
+  font-size: 14px;
 }
 
-div.login-container {
+input {
+  border-radius: 0.6rem;
+  padding: 0.3rem 1rem 0.3rem 1em;
+  border: 1px solid oklch(0.928 0.006 264.531);
+}
+
+label {
+  margin-bottom: 0.4rem;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+button {
+  margin-top: 1.5rem;
+  background-color: rgb(37, 99, 235);
+  color: white;
+  padding: 0.7rem 0 0.7rem;
+  border-width: 0;
+  border-radius: 0.7rem;
+}
+
+p {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: oklab(0.207682 -0.00294792 -0.0397151 / 0.6);
+}
+
+button:hover {
+  background-color: rgb(6, 182, 212);
+}
+
+div.checkbox-line {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+div.checkbox {
+  display: flex;
+}
+
+div.checkbox-line .label {
+  color: oklab(0.207682 -0.00294792 -0.0397151 / 0.6);
+  font-weight: 500;
+  margin-left: 0.4rem;
+}
+
+.login-container {
   display: flex;
   flex-direction: column;
   padding: 2rem;
@@ -16,4 +64,34 @@ div.login-container {
     0 4px 6px -4px rgba(0, 0, 0, 0.1);
   border-radius: 0.6rem;
   border: 1px solid oklch(0.928 0.006 264.531);
+  width: 30rem;
+}
+
+.password {
+  margin-top: 1rem;
+}
+
+.line-with-text {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: oklab(0.207682 -0.00294792 -0.0397151 / 0.6);
+  margin-top: 1rem;
+}
+
+.line-with-text::before,
+.line-with-text::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin: 0 10px;
+}
+
+.sign-up {
+  color: rgb(37, 99, 235);
+}
+
+.sign-up:hover {
+  cursor: pointer;
+  color: rgb(6, 182, 212);
 }
