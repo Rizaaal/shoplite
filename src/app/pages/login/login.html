@@ -3,23 +3,28 @@
   <h2> Bentornato </h2>
   <p class="title"> Accedi al tuo account TechStore </p>
 
-  <div class="login-container">
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <div class="login-container">
 
-    <label class="email"> Email </label>
-    <input type="email" placeholder="name@example.com">
+      <label class="email"> Email </label>
+      <input formControlName="email" type="email" placeholder="name@example.com">
 
-    <label class="password"> Password </label>
-    <input type="password" placeholder="••••••••">
+      <label class="password"> Password </label>
+      <input formControlName="password" type="password" placeholder="••••••••">
 
-    <div class="checkbox-line"> <div class="checkbox"> <input type="checkbox"> <span class="label"> Ricordami </span> </div> <span class="sign-up"> Password dimenticata? </span> </div>
+      <div class="checkbox-line">
+        <div class="checkbox"> <input type="checkbox"> <span class="label"> Ricordami </span> </div> <span class="sign-up">
+          Password dimenticata? </span>
+      </div>
 
-    <button> Accedi </button>
+      <button type="submit" [disabled]="loginForm.invalid" [class.valid-form]="loginForm.valid"> Accedi </button>
 
-    <div class="line-with-text"> oppure </div>
+      <div class="line-with-text"> oppure </div>
 
-    <p> Non hai un account? <span class="sign-up" routerLink="/sign-up"> Registrati </span> </p>
+      <p> Non hai un account? <a class="sign-up" routerLink="/sign-up"> Registrati </a> </p>
 
-  </div>
+    </div>
+  </form>
 
   <a class="home" routerLink=""> ← Torna alla Home </a>
 </section>

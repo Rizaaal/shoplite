@@ -37,7 +37,7 @@ button {
   border-radius: 0.7rem;
 }
 
-button:hover {
+button.valid-form:hover {
   background-color: color-mix(rgb(34, 197, 94) 90%, transparent);
 }
 

@@ -3,30 +3,32 @@
   <h2> Crea il tuo Account </h2>
   <p class="title"> Unisciti a TechStore e inizia a fare acquisti </p>
 
-  <div class="sign-up-container">
+  <form [formGroup]="registerForm">
+    <div class="sign-up-container">
 
-    <label class="first-name"> Nome </label>
-    <input type="text" placeholder="First Name">
+      <label class="first-name"> Nome </label>
+      <input formControlName="firstName" type="text" placeholder="First Name">
 
-    <label class="last-name margin"> Cognome </label>
-    <input type="text" placeholder="Last Name">
+      <label class="last-name margin"> Cognome </label>
+      <input formControlName="lastName" type="text" placeholder="Last Name">
 
-    <label class="email margin"> Email </label>
-    <input type="email" placeholder="example@email.com">
+      <label class="email margin"> Email </label>
+      <input formControlName="email" type="email" placeholder="example@email.com">
 
-    <label class="password margin"> Password </label>
-    <input type="password" placeholder="••••••••">
+      <label class="password margin"> Password </label>
+      <input formControlName="password" type="password" placeholder="••••••••">
 
-    <label class="confirm-password margin"> Conferma Password </label>
-    <input type="password" placeholder="••••••••">
+      <label class="confirm-password margin"> Conferma Password </label>
+      <input type="password" placeholder="••••••••">
 
-    <button> Crea Account </button>
+      <button type="submit" [disabled]="registerForm.invalid" [class.valid-form]="registerForm.valid"> Crea Account </button>
 
-    <div class="line-with-text"> oppure </div>
+      <div class="line-with-text"> oppure </div>
 
-    <p> Non hai un account? <span class="sign-in" routerLink="/sign-in"> Accedi </span> </p>
+      <p> Non hai un account? <a class="sign-in" routerLink="/sign-in"> Accedi </a> </p>
 
-  </div>
+    </div>
+  </form>
 
   <a class="home" routerLink=""> ← Torna alla Home </a>
 </section>

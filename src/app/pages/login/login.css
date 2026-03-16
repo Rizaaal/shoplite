@@ -42,7 +42,7 @@ p.title {
   font-size: 16px;
 }
 
-button:hover {
+button.valid-form:hover {
   background-color: rgb(6, 182, 212);
 }
 
