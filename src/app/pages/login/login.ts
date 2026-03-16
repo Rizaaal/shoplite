@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth-service';
+import { localStorageKey } from '../../constants';
 
 @Component({
   selector: 'app-login',
@@ -9,17 +11,31 @@ import { RouterLink } from "@angular/router";
   styleUrl: './login.css',
 })
 export class Login {
+  authService = inject(AuthService);
+  router = inject(Router);
+
   loginForm: FormGroup = new FormGroup({
-    email: new FormControl<string>("", [Validators.required, Validators.email]),
-    password: new FormControl<string>("", [Validators.required, Validators.minLength(8)])
+    email: new FormControl<string>('', [Validators.required, Validators.email]),
+    password: new FormControl<string>('', [Validators.required]),
   });
 
-  onLogin(): void {
-    if(this.loginForm.valid)
-    {
-      const dataLogin = this.loginForm;
-      console.log(dataLogin);
+  constructor() {
+    console.log(this.authService.user.value());
+    effect(() => {
+      // salta l'effetto se non abbiamo chiamato onLogin
+      if (!this.authService.credentials()) return;
 
+      if (this.authService.user.hasValue()) {
+        const user = JSON.stringify(this.authService.user.value());
+        localStorage.setItem(localStorageKey, user);
+        this.router.navigate(['']);
+      }
+    });
+  }
+
+  onLogin(): void {
+    if (this.loginForm.valid) {
+      this.authService.credentials.set(this.loginForm.value);
     }
   }
 }
