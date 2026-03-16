@@ -1,0 +1,19 @@
+section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #F8FAFC;
+}
+
+div.login-container {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  border-radius: 0.6rem;
+  border: 1px solid oklch(0.928 0.006 264.531);
+}
