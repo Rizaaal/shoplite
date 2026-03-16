@@ -1,0 +1,83 @@
+section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #F8FAFC;
+  font-size: 14px;
+}
+
+input {
+  border-radius: 0.6rem;
+  padding: 0.5rem 1rem 0.5rem 1em;
+  border: 1px solid oklch(0.928 0.006 264.531);
+}
+
+label {
+  margin-bottom: 0.4rem;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+p {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: oklab(0.207682 -0.00294792 -0.0397151 / 0.6);
+}
+
+p.title {
+  margin: 0 0 2rem 0;
+  font-size: 16px;
+}
+
+.sign-up-container {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  border-radius: 0.6rem;
+  border: 1px solid oklch(0.928 0.006 264.531);
+  width: 30rem;
+}
+
+label.margin {
+  margin-top: 1rem;
+}
+
+.line-with-text {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: oklab(0.207682 -0.00294792 -0.0397151 / 0.6);
+  margin-top: 1rem;
+}
+
+.line-with-text::before,
+.line-with-text::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin: 0 10px;
+}
+
+.sign-in {
+  color: rgb(37, 99, 235);
+}
+
+.sign-in:hover {
+  cursor: pointer;
+  color: rgb(6, 182, 212);
+}
+
+.home {
+  margin-top: 1rem;
+  text-decoration: none;
+  color: oklab(0.207682 -0.00294792 -0.0397151 / 0.6);
+}
+
+.home:hover {
+  color: rgb(37, 99, 235);
+}

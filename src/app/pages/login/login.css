@@ -10,7 +10,7 @@ section {
 
 input {
   border-radius: 0.6rem;
-  padding: 0.3rem 1rem 0.3rem 1em;
+  padding: 0.5rem 1rem 0.5rem 1em;
   border: 1px solid oklch(0.928 0.006 264.531);
 }
 
@@ -33,6 +33,11 @@ p {
   margin-top: 1.5rem;
   text-align: center;
   color: oklab(0.207682 -0.00294792 -0.0397151 / 0.6);
+}
+
+p.title {
+  margin: 0 0 2rem 0;
+  font-size: 16px;
 }
 
 button:hover {
@@ -100,4 +105,8 @@ div.checkbox-line .label {
   margin-top: 1rem;
   text-decoration: none;
   color: oklab(0.207682 -0.00294792 -0.0397151 / 0.6);
+}
+
+.home:hover {
+  color: rgb(37, 99, 235);
 }
