@@ -43,13 +43,11 @@ span {
 }
 
 .image {
-  background-image: url(../../../assets/card-image.jpeg);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  object-fit: cover;
   min-height: 20rem;
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
+  max-width: 100%;
 }
 
 article .description {
@@ -63,7 +61,18 @@ article .description {
 
 .title {
   display: flex;
+  gap: 5px;
   justify-content: space-between;
+}
+
+.title h3 {
+ margin: 0;
+}
+
+.title p {
+  line-height: 1;
+  min-width: 30%;
+  text-align: end;
 }
 
 .price {
