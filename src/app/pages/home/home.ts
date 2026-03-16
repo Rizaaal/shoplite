@@ -3,6 +3,7 @@ import { ProductCard } from '../../components/shared/product-card/product-card';
 import { ChiSiamo } from '../../components/shared/chi-siamo/chi-siamo';
 import { ProductsService } from '../../services/products.service';
 import { NgClass } from '../../../../node_modules/@angular/common/types/_common_module-chunk';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-home',

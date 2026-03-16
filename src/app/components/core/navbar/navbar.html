@@ -1,45 +1,85 @@
 <nav>
-
   <ul class="container">
-
-    <li class="logo"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    <li class="logo">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
         class="lucide lucide-store h-6 w-6 text-white"
         data-fg-d5jy3="32.20:32.1773:/src/app/components/Header.tsx:13:11:545:40:e:Store::::::EKAh"
-        data-fgid-d5jy3=":r7:">
+        data-fgid-d5jy3=":r7:"
+      >
         <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"></path>
         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
         <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"></path>
         <path d="M2 7h20"></path>
         <path
-          d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7">
-        </path>
-      </svg> TechStore </li>
+          d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"
+        ></path>
+      </svg>
+      TechStore
+    </li>
 
     <ul class="service">
-      <li routerLink="/home"> Home </li>
-      <li> Categorie </li>
+      <li routerLink="/home">Home</li>
+      <li>Categorie</li>
     </ul>
 
     <ul class="utilities">
-      <li class="carello"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      <li class="carello">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
           class="lucide lucide-shopping-cart h-5 w-5 text-white"
           data-fg-d5jy12="32.20:32.1773:/src/app/components/Header.tsx:30:11:1181:47:e:ShoppingCart::::::BPYc"
-          data-fgid-d5jy12=":rd:">
+          data-fgid-d5jy12=":rd:"
+        >
           <circle cx="8" cy="21" r="1"></circle>
           <circle cx="19" cy="21" r="1"></circle>
-          <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
-        </svg> Carello </li>
+          <path
+            d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"
+          ></path>
+        </svg>
+        Carello
+      </li>
 
-        <button routerLink="/sign-in" class="login"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user h-5 w-5"
-          data-fg-d5jy38="32.20:79.2518:/src/app/components/Header.tsx:93:15:3940:28:e:User::::::wpV" data-fgid-d5jy38=":rhu:">
-          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
-        </svg> Accedi </button>
+      @if (isLogged()) {
+        <button (click)="logout()" class="login">Logout</button>
+      } @else {
+        <button routerLink="/sign-in" class="login">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-user h-5 w-5"
+            data-fg-d5jy38="32.20:79.2518:/src/app/components/Header.tsx:93:15:3940:28:e:User::::::wpV"
+            data-fgid-d5jy38=":rhu:"
+          >
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          Accedi
+        </button>
+      }
     </ul>
-
   </ul>
-
 </nav>

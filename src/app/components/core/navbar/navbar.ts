@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { Component, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../services/auth-service';
+import { localStorageKey } from '../../../constants';
 
 @Component({
   selector: 'app-navbar',
@@ -7,4 +9,12 @@ import { RouterLink } from "@angular/router";
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class Navbar {}
+export class Navbar {
+  authService = inject(AuthService);
+  isLogged = signal<boolean>(this.authService.user.hasValue());
+
+  logout() {
+    this.authService.logout();
+    this.isLogged.set(false);
+  }
+}

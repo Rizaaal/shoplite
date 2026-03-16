@@ -1,29 +1,36 @@
 <section>
-
-  <h2> Bentornato </h2>
-  <p class="title"> Accedi al tuo account TechStore </p>
+  <h2>Bentornato</h2>
+  <p class="title">Accedi al tuo account TechStore</p>
 
   <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
     <div class="login-container">
-
       <label class="email"> Email </label>
-      <input formControlName="email" type="email" placeholder="name@example.com">
+      <input formControlName="email" type="email" placeholder="name@example.com" />
 
       <label class="password"> Password </label>
-      <input formControlName="password" type="password" placeholder="••••••••">
+      <input formControlName="password" type="password" placeholder="••••••••" />
 
       <div class="checkbox-line">
-        <div class="checkbox"> <input type="checkbox"> <span class="label"> Ricordami </span> </div> <span class="sign-up">
-          Password dimenticata? </span>
+        <div class="checkbox"><input type="checkbox" /> <span class="label"> Ricordami </span></div>
+        <span class="sign-up"> Password dimenticata? </span>
       </div>
 
-      <button type="submit" [disabled]="loginForm.invalid" [class.valid-form]="loginForm.valid"> Accedi </button>
+      <button type="submit" [disabled]="loginForm.invalid" [class.valid-form]="loginForm.valid">
+        @if (authService.user.isLoading()) {
+          ...caricamento
+        } @else {
+          Accedi
+        }
+      </button>
 
-      <div class="line-with-text"> oppure </div>
+      <div class="line-with-text">oppure</div>
 
-      <p> Non hai un account? <a class="sign-up" routerLink="/sign-up"> Registrati </a> </p>
-
+      <p>Non hai un account? <a class="sign-up" routerLink="/sign-up"> Registrati </a></p>
     </div>
+
+    @if (authService.user.error()) {
+      <p class="error">Credenziali invalide. Riprova!</p>
+    }
   </form>
 
   <a class="home" routerLink=""> ← Torna alla Home </a>
