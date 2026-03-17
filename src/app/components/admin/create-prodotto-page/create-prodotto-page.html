@@ -1,0 +1,16 @@
+<section class="space-y-10">
+  <div class="flex justify-between items-center">
+    <h1 class="text-3xl">Admin - Prodotti</h1>
+    <button (click)="goBack()">← Back</button>
+  </div>
+
+  <p *ngIf="error()" class="text-red-500">{{ error() }}</p>
+
+  <div class="grid lg:grid-cols-2 gap-10">
+    <app-prodotto-form [loading]="loading()" (createProduct)="handleCreateProduct($event)" />
+
+    <app-prodotto-preview [product]="product()" />
+  </div>
+
+  <app-prodotti-list [products]="products()" />
+</section>

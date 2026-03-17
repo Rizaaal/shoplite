@@ -1,0 +1,14 @@
+<div *ngIf="product; else empty">
+  <img [src]="product.image || ''" width="200" />
+
+  <h2>{{ product.nome }}</h2>
+  <p>{{ product.descrizione }}</p>
+
+  <p>€ {{ product.prezzo }}</p>
+  <p>{{ product.categoria }}</p>
+  <p>Stock: {{ product.stock }}</p>
+</div>
+
+<ng-template #empty>
+  <p>Nessuna anteprima</p>
+</ng-template>

@@ -1,0 +1,20 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+  <input formControlName="nome" placeholder="Nome prodotto" />
+
+  <textarea formControlName="descrizione" placeholder="Descrizione"></textarea>
+
+  <input type="number" formControlName="prezzo" placeholder="Prezzo" />
+
+  <input type="number" formControlName="stock" placeholder="Stock" />
+
+  <select formControlName="categoria">
+    <option value="">Categoria</option>
+    <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+  </select>
+
+  <input type="file" (change)="onFileChange($event)" />
+
+  <button [disabled]="loading">
+    {{ loading ? 'Loading...' : 'Crea prodotto' }}
+  </button>
+</form>

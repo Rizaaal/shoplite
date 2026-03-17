@@ -1,5 +1,4 @@
 import { Injectable, resource, signal } from '@angular/core';
-import { Product } from '../components/shared/product-card/product-card';
 import { baseApiUrl, localStorageKey, roles } from '../constants';
 
 @Injectable({
@@ -8,16 +7,15 @@ import { baseApiUrl, localStorageKey, roles } from '../constants';
 export class AuthService {
   credentials = signal<Credentials | null>(null);
 
-  user = resource<User, Credentials | null>({
+  user = resource<Session | null, Credentials | null>({
     params: () => this.credentials(),
     loader: async ({ params }) => {
       if (!params) return null;
 
-      const localStorageUser = localStorage.getItem('user');
+      const localStorageSession = localStorage.getItem(localStorageKey);
 
-      // if user is signed in, return the user
-      if (localStorageUser) {
-        return JSON.parse(localStorageUser);
+      if (localStorageSession) {
+        return JSON.parse(localStorageSession);
       }
 
       const response = await fetch(`${baseApiUrl}/auth/login`, {
@@ -32,12 +30,29 @@ export class AuthService {
 
       const session = await response.json();
 
-      return {
-        user: this.credentials(),
-        token: session.token,
+      const normalizedSession: Session = {
+        user: session.user ?? session.data?.user ?? null,
+        token: session.token ?? session.data?.token ?? '',
       };
+
+      if (!normalizedSession.token) {
+        throw new Error('Token non trovato nella response di login');
+      }
+
+      localStorage.setItem(localStorageKey, JSON.stringify(normalizedSession));
+
+      return normalizedSession;
     },
   });
+
+  getToken(): string | null {
+    const localStorageSession = localStorage.getItem(localStorageKey);
+
+    if (!localStorageSession) return null;
+
+    const session: Session = JSON.parse(localStorageSession);
+    return session.token ?? null;
+  }
 
   logout() {
     this.credentials.set(null);
@@ -56,6 +71,11 @@ export type User = {
   indirizzo: string;
   password: string;
   role: roles.user | roles.admin;
+};
+
+export type Session = {
+  user: User | null;
+  token: string;
 };
 
 type Credentials = Pick<User, 'email' | 'password'>;
