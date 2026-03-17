@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const bcrypt = require('bcrypt');
 
 const mapCliente = (row) => {
   return {
@@ -62,6 +63,8 @@ const createCliente = async ({
   role = 'user',
   password,
 }) => {
+  const hashedPassword = await bcrypt.hash(password, 10)
+
   const [result] = await db.query(
     `
     INSERT INTO clienti (
@@ -74,7 +77,7 @@ const createCliente = async ({
     )
     VALUES (?, ?, ?, ?, ?, ?)
     `,
-    [nome, cognome, email, indirizzo, role, password],
+    [nome, cognome, email, indirizzo, role, hashedPassword],
   );
 
   return getClienteById(result.insertId);
