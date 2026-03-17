@@ -31,7 +31,8 @@ li {
 }
 
 .service li:hover,
-.utilities .login:hover {
+.utilities .login:hover,
+.carrello:hover {
   color: #06B6D4;
   cursor: pointer
 }
