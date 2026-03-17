@@ -21,7 +21,7 @@ export class AuthService {
         return JSON.parse(localStorageUser);
       }
 
-      const response = await fetch(`${baseApiUrl}/login`, {
+      const response = await fetch(`${baseApiUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(params),
