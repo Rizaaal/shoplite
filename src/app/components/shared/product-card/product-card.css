@@ -10,8 +10,10 @@ article {
 button {
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.8rem 0 0.8rem 0;
   background-color: rgb(27, 221, 98);
-  padding: 0.4rem 4.2rem 0.4rem 4.2rem;
   border-radius: 0.5rem;
   border-width: 0px;
   color: white;
@@ -61,8 +63,8 @@ article .description {
 
 .title {
   display: flex;
-  gap: 5px;
   justify-content: space-between;
+  margin-bottom: 0.5rem;
 }
 
 .title h3 {
