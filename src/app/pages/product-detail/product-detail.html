@@ -1,7 +1,6 @@
 <div class="product-page">
     <div class="container-tech">
         <div class="main-layout">
-
             <div class="image-viewer">
                 <div class="img-container">
                     <img [src]="product.image" [alt]="product.name">
@@ -9,9 +8,8 @@
             </div>
 
             <div class="details-content">
-                <h1>{{ product.name }}</h1>
                 <span class="category-tag">{{ product.category }}</span>
-
+                <h1>{{ product.name }}</h1>
 
                 <div class="price-section">
                     <div class="main-price">€ {{ product.price }}</div>
@@ -31,14 +29,10 @@
                 <div class="availability">
                     <span class="status-dot" [class.available]="product.available"></span>
                     <span [class.text-green]="product.available">
-                        {{ product.available ? 'Disponibile e pronto per la spedizione' : 'Attualmente non disponibile'
+                        {{ product.available ? 'Disponibile' : 'Attualmente non disponibile'
                         }}
                     </span>
                 </div>
-
-                <div class="separator"></div>
-
-                <p class="description-text">{{ product.description }}</p>
 
                 <div class="purchase-zone">
                     <button class="add-btn" [disabled]="!product.available" (click)="addToCart()">
@@ -46,12 +40,21 @@
                     </button>
                 </div>
             </div>
-
         </div>
+
+        <div class="separator"></div>
+        <p class="description-text">{{ product.description }}</p>
 
         <div class="carousel-section">
             <h2 class="section-title">Potrebbe interessarti anche</h2>
-            <div class="carousel-placeholder">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 mt-3">
+                @for (item of suggestedProducts; track item.id) {
+                <div class="col">
+                    <app-product-card [product]="item" (click)="goToDetail(item.id)"
+                        style="cursor: pointer; display: block;">
+                    </app-product-card>
+                </div>
+                }
             </div>
         </div>
     </div>

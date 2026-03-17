@@ -1,143 +1,143 @@
 /* Pagina totale */
 .product-page {
-    background-color: #ffffff; 
-    padding: 60px 0;
-    color: #1e293b;
-  }
-  
-  .container-tech {
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
-  
- 
-  .main-layout {
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr; 
-    gap: 60px;
-    align-items: start;
-  }
-  
-  
-  .img-container {
-    width: 100%;
-    background-color: #f8fafc; 
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px;
-  }
-  
-  .img-container img {
-    max-width: 100%;
-    height: auto;
-    object-fit: contain;
-  }
-  
-  .category-tag {
-    color: #3b82f6; 
-    text-transform: uppercase;
-    font-weight: 800;       
-    font-size: 1.1rem;    
-    letter-spacing: 2px;    
-    display: inline-block;
-    margin-bottom: 8px;
-  }
-  
-  h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    margin: 10px 0 20px 0;
-    color: #0f172a;
-  }
-  
-  .price-section {
-    margin-bottom: 30px;
-  }
-  
-  .main-price {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #1e293b;
-  }
-  
-  .rating-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 5px;
-  }
-  
-  .reviews-count {
-    font-size: 0.95rem;
-    color: #64748b;
-  }
-  
-  .availability {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 25px;
-  }
-  
-  .status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #ef4444;
-  }
-  .status-dot.available { background: #22c55e; }
-  .text-green { color: #16a34a; }
-  
-  .separator {
-    height: 1px;
-    background: #e2e8f0;
-    margin: 30px 0;
-  }
-  
-  .description-text {
-    font-size: 1.15rem;
-    line-height: 1.8;
-    color: #475569;
-    margin-bottom: 40px;
-  }
-  
- 
-  .add-btn {
-    background-color: rgb(27, 221, 98);
-    color: white;
-    border: none;
-    padding: 18px 35px;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    width: 100%;
-  }
-  
-  .add-btn:hover {
-    filter: brightness(1.1);
-    transform: translateY(-2px);
-  }
-  
-  /* Sezione Carosello */
-  .carousel-section {
-    margin-top: 100px;
-  }
-  
-  .section-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 30px;
-  }
-  
-  /* Responsive */
-  @media (max-width: 992px) {
-    .main-layout { grid-template-columns: 1fr; }
-    h1 { font-size: 2.2rem; }
-  }
+  background-color: #ffffff; 
+  padding: 60px 0;
+  color: #1e293b;
+}
+
+.container-tech {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr; 
+  gap: 60px;
+  align-items: start;
+}
+
+
+.img-container {
+  width: 100%;
+  background-color: #f8fafc; 
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.img-container img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.category-tag {
+  color: #3b82f6; 
+  text-transform: uppercase;
+  font-weight: 800;       
+  font-size: 1.1rem;    
+  letter-spacing: 2px;    
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 10px 0 20px 0;
+  color: #0f172a;
+}
+
+.price-section {
+  margin-bottom: 30px;
+}
+
+.main-price {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.reviews-count {
+  font-size: 0.95rem;
+  color: #64748b;
+}
+
+.availability {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 25px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+}
+.status-dot.available { background: #22c55e; }
+.text-green { color: #16a34a; }
+
+.separator {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 30px 0;
+}
+
+.description-text {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #475569;
+  margin-bottom: 40px;
+}
+
+
+.add-btn {
+  background-color: rgb(27, 221, 98);
+  color: white;
+  border: none;
+  padding: 18px 35px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.add-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+/* Sezione Carosello */
+.carousel-section {
+  margin-top: 100px;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .main-layout { grid-template-columns: 1fr; }
+  h1 { font-size: 2.2rem; }
+}
