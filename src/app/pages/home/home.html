@@ -133,11 +133,10 @@
         </div>
       </div>
     </section>
-
     <section class="product-card-section">
       <div class="product-card-header">
         <h2>Prodotti in Evidenza</h2>
-        <p>
+        <p routerLink="/products" style="cursor: pointer">
           Vedi tutti
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -150,13 +149,17 @@
             stroke-linecap="round"
             stroke-linejoin="round"
             class="lucide lucide-arrow-right h-5 w-5"
-            data-fg-dag64="32.76:32.10055:/src/app/pages/Home.tsx:97:13:4734:34:e:ArrowRight::::::s5N"
-            data-fgid-dag64=":r8e:"
           >
             <path d="M5 12h14"></path>
             <path d="m12 5 7 7-7 7"></path>
           </svg>
         </p>
+      </div>
+
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        @for (prod of featuredProducts(); track prod.id) {
+          <app-product-card [product]="prod" (click)="goToDetail(prod.id)" />
+        }
       </div>
 
       <div class="card-product-container">
@@ -165,7 +168,7 @@
         } @else if (productsService.products.error()) {
           <p>{{ productsService.products.error() }}</p>
         } @else {
-          @for (product of products(); track $index) {
+          @for (product of featuredProducts(); track $index) {
             <app-product-card [product]="product" />
           } @empty {
             <p>Nessun prodotto da mostrare</p>

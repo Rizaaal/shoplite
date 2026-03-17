@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ProductCard } from './product-card';
 
 describe('ProductCard', () => {
@@ -13,7 +12,11 @@ describe('ProductCard', () => {
 
     fixture = TestBed.createComponent(ProductCard);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    
+    // Mock del prodotto per evitare errori durante il test
+    component.product = { name: 'Test', price: 100 }; 
+    
+    fixture.detectChanges();
   });
 
   it('should create', () => {

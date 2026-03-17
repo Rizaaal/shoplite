@@ -1,3 +1,4 @@
+
 article {
   display: grid;
   grid-template-columns: 1fr;
@@ -52,16 +53,15 @@ span {
   max-width: 100%;
 }
 
-article .description {
-  padding: 1rem;
-}
+.description { padding: 1rem; }
 
-.review {
-  display: flex;
-  align-items: center;
-}
+.title { display: flex; justify-content: space-between; align-items: flex-start; }
+h3 { font-size: 16px; font-weight: 600; margin: 0; }
+.price { color: #2563EB; font-weight: 600; margin: 0; }
 
-.title {
+.category-text { font-size: 0.85rem; color: #64748B; margin: 0.2rem 0 0.8rem 0; }
+
+.status-row {
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.5rem;
@@ -77,7 +77,30 @@ article .description {
   text-align: end;
 }
 
-.price {
-  color: #2563EB;
+.availability { display: flex; align-items: center; gap: 6px; }
+.tech-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+.review { display: flex; align-items: center; margin: 0; font-size: 0.9rem; }
+.star-icon { color: #2563EB; fill: #2563EB; margin-right: 4px; }
+
+button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(27, 221, 98);
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 0.5rem;
+  border: none;
+  color: white;
   font-weight: 600;
+  cursor: pointer;
 }
+
+button:disabled { background-color: #E2E8F0; color: #94a3b8; cursor: not-allowed; }
+button svg { width: 1.2rem; margin-right: 0.5rem; }
+
+.bg-success { background-color: #22C55E; }
+.bg-danger { background-color: #EF4444; }
+.text-success { color: #16A34A; }
+.text-danger { color: #DC2626; }

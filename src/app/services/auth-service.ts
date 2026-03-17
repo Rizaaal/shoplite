@@ -1,5 +1,4 @@
 import { Injectable, resource, signal } from '@angular/core';
-import { Product } from '../components/shared/product-card/product-card';
 import { baseApiUrl, localStorageKey, roles } from '../constants';
 
 @Injectable({
