@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router'; // Aggiungi Router
 import { ProductCard } from '../../components/shared/product-card/product-card'; // Importa la tua card
+import { ProductsService } from '../../services/products.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -11,29 +12,36 @@ import { ProductCard } from '../../components/shared/product-card/product-card';
   styleUrl: './product-detail.css',
 })
 export class ProductDetail implements OnInit {
+  productsService = inject(ProductsService);
+
   product: any;
   suggestedProducts: any[] = []; // Array per le card in basso
 
-  mockProducts = [
-    { id: 1, name: 'RTX 4070', price: 650, category: 'GPU', image: 'https://i.postimg.cc/pLzGdjK8/jpeg-2.png', description: 'La GeForce RTX™ 4070 ti permette di affrontare i giochi e le app più recenti con l\'ultra-efficiente architettura NVIDIA Ada Lovelace. Sperimenta il ray-tracing accelerato e la grafica potenziata dall\'IA con DLSS 3.', available: true, rating: 4.8, reviews: 342 },
-    { id: 2, name: 'Ryzen 7 7800X3D', price: 450, category: 'CPU', image: 'https://i.postimg.cc/pLzGdjK8/jpeg-2.png', description: 'La GeForce RTX™ 4070 ti permette di affrontare i giochi e le app più recenti con l\'ultra-efficiente architettura NVIDIA Ada Lovelace. Sperimenta il ray-tracing accelerato e la grafica potenziata dall\'IA con DLSS 3.', available: true, rating: 4.9, reviews: 156 },
-    { id: 3, name: 'DDR5 32GB', price: 150, category: 'RAM', image: 'https://i.postimg.cc/pLzGdjK8/jpeg-2.png', description: 'La GeForce RTX™ 4070 ti permette di affrontare i giochi e le app più recenti con l\'ultra-efficiente architettura NVIDIA Ada Lovelace. Sperimenta il ray-tracing accelerato e la grafica potenziata dall\'IA con DLSS 3.', available: false, rating: 4.5, reviews: 89 },
-    { id: 4, name: 'Samsung 990 Pro', price: 180, category: 'Storage', image: 'https://i.postimg.cc/pLzGdjK8/jpeg-2.png', description: 'La GeForce RTX™ 4070 ti permette di affrontare i giochi e le app più recenti con l\'ultra-efficiente architettura NVIDIA Ada Lovelace. Sperimenta il ray-tracing accelerato e la grafica potenziata dall\'IA con DLSS 3.', available: true, rating: 4.9, reviews: 512 }
-  ];
+  products = computed(() => {
+    const products = this.productsService.products;
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+    // check if defined
+    if (!products.hasValue()) return [];
+
+    return products.value();
+  });
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     // Usiamo subscribe per reagire ai cambi di URL mentre siamo nella stessa pagina
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const productId = Number(params['id']);
-      
+
       // 1. Cerchiamo il prodotto attuale
-      this.product = this.mockProducts.find(p => p.id === productId) || this.mockProducts[0];
+      this.product = this.products().find((p) => p.id === productId) || this.products()[0];
 
       // 2. Prendiamo i suggerimenti (tutti tranne quello che stiamo guardando)
-      this.suggestedProducts = this.mockProducts
-        .filter(p => p.id !== this.product.id)
+      this.suggestedProducts = this.products()
+        .filter((p) => p.id !== this.product.id)
         .slice(0, 4); // Ne prendiamo massimo 4
     });
   }
