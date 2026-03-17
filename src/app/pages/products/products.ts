@@ -1,40 +1,46 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ProductCard } from '../../components/shared/product-card/product-card';
+import { ProductsService } from '../../services/products.service';
 
 @Component({
   selector: 'app-product-list',
   templateUrl: './products.html',
   styleUrls: ['./products.css'],
   standalone: true,
-  imports: [CommonModule, ProductCard]
+  imports: [CommonModule, ProductCard],
 })
-export class Products { // <--- Rinominata in Products per il test
-  categories = ["GPU", "Memoria", "Accessori", "Case", "CPU", "Scheda Madre"];
+export class Products {
+  productsService = inject(ProductsService);
+
+  // <--- Rinominata in Products per il test
+  categories = ['GPU', 'Memoria', 'Accessori', 'Case', 'CPU', 'Scheda Madre'];
   selectedCategories: string[] = [];
-  searchQuery: string = "";
+  searchQuery: string = '';
   minPrice: number | null = null;
   maxPrice: number | null = null;
   sortOption: string = '';
 
-  products = [
-    { id: 1, name: "RTX 4070", price: 650, category: "GPU", image: "assets/gpu1.jpg", available: true },
-    { id: 2, name: "Corsair 16GB RAM", price: 80, category: "Memoria", image: "assets/ram1.jpg", available: true },
-    { id: 3, name: "Gaming Headset", price: 60, category: "Accessori", image: "assets/headset.jpg", available: false },
-    { id: 4, name: "Case Mid Tower", price: 120, category: "Case", image: "assets/case1.jpg", available: true }
-  ];
+  products = computed(() => {
+    const products = this.productsService.products;
 
-  filteredProducts = [...this.products];
+    // check if defined
+    if (!products.hasValue()) return [];
+
+    return products.value();
+  });
+
+  filteredProducts = [...this.products()];
 
   constructor(private router: Router) {}
 
   goToDetail(productId: number) {
-    this.router.navigate(['/product-detail', productId]); 
+    this.router.navigate(['/product-detail', productId]);
   }
 
   getCategoryCount(cat: string): number {
-    return this.products.filter(p => p.category === cat).length;
+    return this.products().filter((p) => p.categoria === cat).length;
   }
 
   onSearchChange(value: string) {
@@ -44,7 +50,7 @@ export class Products { // <--- Rinominata in Products per il test
 
   toggleCategory(cat: string) {
     if (this.selectedCategories.includes(cat)) {
-      this.selectedCategories = this.selectedCategories.filter(c => c !== cat);
+      this.selectedCategories = this.selectedCategories.filter((c) => c !== cat);
     } else {
       this.selectedCategories.push(cat);
     }
@@ -68,15 +74,19 @@ export class Products { // <--- Rinominata in Products per il test
   }
 
   applyFilters() {
-    this.filteredProducts = this.products
-      .filter(p => !this.selectedCategories.length || this.selectedCategories.includes(p.category))
-      .filter(p => p.name.toLowerCase().includes(this.searchQuery.toLowerCase()))
-      .filter(p => this.minPrice === null || p.price >= this.minPrice!)
-      .filter(p => this.maxPrice === null || p.price <= this.maxPrice!);
+    this.filteredProducts = this.products()
+      .filter(
+        (p) => !this.selectedCategories.length || this.selectedCategories.includes(p.categoria),
+      )
+      .filter((p) => p.nome.toLowerCase().includes(this.searchQuery.toLowerCase()))
+      .filter((p) => this.minPrice === null || p.prezzo >= this.minPrice!)
+      .filter((p) => this.maxPrice === null || p.prezzo <= this.maxPrice!);
 
-    if (this.sortOption === 'name_asc') this.filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
-    if (this.sortOption === 'name_desc') this.filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
-    if (this.sortOption === 'price_asc') this.filteredProducts.sort((a, b) => a.price - b.price);
-    if (this.sortOption === 'price_desc') this.filteredProducts.sort((a, b) => b.price - a.price);
+    if (this.sortOption === 'name_asc')
+      this.filteredProducts.sort((a, b) => a.nome.localeCompare(b.nome));
+    if (this.sortOption === 'name_desc')
+      this.filteredProducts.sort((a, b) => b.nome.localeCompare(a.nome));
+    if (this.sortOption === 'price_asc') this.filteredProducts.sort((a, b) => a.prezzo - b.prezzo);
+    if (this.sortOption === 'price_desc') this.filteredProducts.sort((a, b) => b.prezzo - a.prezzo);
   }
 }

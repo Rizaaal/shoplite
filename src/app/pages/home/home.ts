@@ -19,8 +19,6 @@ export class Home {
   featuredProducts = computed(() => {
     const products = this.productsService.products;
 
-    console.log(products);
-
     // check if defined
     if (!products.hasValue()) return [];
 
