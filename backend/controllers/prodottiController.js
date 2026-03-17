@@ -51,7 +51,7 @@ const getProdottiByCategoriaController = async (req, res) => {
 
 const addProdotto = async (req, res) => {
   try {
-    const { nome, descrizione, prezzo, stock, categoria } = req.body;
+    const { nome, descrizione, prezzo, stock, categoria, image } = req.body;
 
     if (!nome || prezzo === undefined) {
       return sendError(res, 'nome e prezzo sono obbligatori', 400);
@@ -63,6 +63,7 @@ const addProdotto = async (req, res) => {
       prezzo,
       stock,
       categoria,
+      image,
     });
 
     return sendSuccess(res, createdProdotto, 201);

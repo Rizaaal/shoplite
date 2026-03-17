@@ -5,6 +5,7 @@ const authRoutes = require('./routes/authRoutes');
 const clientiRoutes = require('./routes/clientiRoutes');
 const prodottiRoutes = require('./routes/prodottiRoutes');
 const ordiniRoutes = require('./routes/ordiniRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 
 const { notFound } = require('./middlewares/notFound');
 const { errorHandler } = require('./middlewares/errorHandler');
@@ -27,6 +28,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/clienti', clientiRoutes);
 app.use('/api/prodotti', prodottiRoutes);
 app.use('/api/ordini', ordiniRoutes);
+app.use('/api/upload', uploadRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

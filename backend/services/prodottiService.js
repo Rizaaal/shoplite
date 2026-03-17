@@ -8,6 +8,7 @@ const mapProdotto = (row) => {
     prezzo: Number(row.prezzo),
     stock: row.stock,
     categoria: row.categoria,
+    image: row.image,
     createdAt: row.created_at,
   };
 };
@@ -21,6 +22,7 @@ const getAllProdotti = async () => {
       prezzo,
       stock,
       categoria,
+      image,
       created_at
     FROM prodotti
     ORDER BY id_prodotto DESC
@@ -39,6 +41,7 @@ const getProdottoById = async (id) => {
       prezzo,
       stock,
       categoria,
+      image,
       created_at
     FROM prodotti
     WHERE id_prodotto = ?
@@ -64,6 +67,7 @@ const getProdottiByCategoria = async (categoria) => {
       prezzo,
       stock,
       categoria,
+      image,
       created_at
     FROM prodotti
     WHERE LOWER(categoria) = LOWER(?)
@@ -75,7 +79,14 @@ const getProdottiByCategoria = async (categoria) => {
   return rows.map(mapProdotto);
 };
 
-const createProdotto = async ({ nome, descrizione, prezzo, stock = 0, categoria }) => {
+const createProdotto = async ({
+  nome,
+  descrizione,
+  prezzo,
+  stock = 0,
+  categoria,
+  image = null,
+}) => {
   const [result] = await db.query(
     `
     INSERT INTO prodotti (
@@ -83,11 +94,12 @@ const createProdotto = async ({ nome, descrizione, prezzo, stock = 0, categoria 
       descrizione,
       prezzo,
       stock,
-      categoria
+      categoria,
+      image
     )
-    VALUES (?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?)
     `,
-    [nome, descrizione, prezzo, stock, categoria],
+    [nome, descrizione, prezzo, stock, categoria, image],
   );
 
   return getProdottoById(result.insertId);
