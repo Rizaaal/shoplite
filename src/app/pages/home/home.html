@@ -156,12 +156,6 @@
         </p>
       </div>
 
-      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-        @for (prod of featuredProducts(); track prod.id) {
-          <app-product-card [product]="prod" (click)="goToDetail(prod.id)" />
-        }
-      </div>
-
       <div class="card-product-container">
         @if (productsService.products.isLoading()) {
           <p>...loading</p>
