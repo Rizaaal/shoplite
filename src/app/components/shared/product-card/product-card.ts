@@ -9,21 +9,21 @@ import { Component, input } from '@angular/core';
 export class ProductCard {
   product = input<Product>({
     id: 1,
-    name: 'prodotto',
-    description: 'descrizione',
-    category: 'category',
-    price: 0,
-    qty: 1,
-    imageUrl: 'placeholder.jpg',
+    nome: 'prodotto',
+    descrizione: 'descrizione',
+    categoria: 'category',
+    prezzo: 0,
+    stock: 1,
+    image: 'placeholder.jpg',
   });
 }
 
 export type Product = {
   id: number;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  qty: number;
-  imageUrl: string;
+  nome: string;
+  descrizione: string;
+  categoria: string;
+  prezzo: number;
+  stock: number;
+  image: string;
 };

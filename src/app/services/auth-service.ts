@@ -47,10 +47,12 @@ export class AuthService {
 }
 
 export type User = {
-  username: string;
+  nome: string;
+  cognome: string;
   email: string;
+  indirizzo: string;
   password: string;
-  roles: roles.user | roles.admin;
+  role: roles.user | roles.admin;
 };
 
 type Credentials = Pick<User, 'email' | 'password'>;

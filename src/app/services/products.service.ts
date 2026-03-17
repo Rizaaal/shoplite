@@ -8,7 +8,7 @@ import { baseApiUrl } from '../constants';
 export class ProductsService {
   products = resource<Product[], string>({
     loader: async () => {
-      const response = await fetch(`${baseApiUrl}/products`);
+      const response = await fetch(`${baseApiUrl}/prodotti`);
 
       if (!response.ok) {
         throw new Error('Non è stato possibile caricare i prodotti.');
