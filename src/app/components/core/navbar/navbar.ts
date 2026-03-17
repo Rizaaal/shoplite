@@ -1,7 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth-service';
-import { localStorageKey } from '../../../constants';
 
 @Component({
   selector: 'app-navbar',
