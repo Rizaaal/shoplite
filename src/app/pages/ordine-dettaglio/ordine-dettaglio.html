@@ -1,0 +1,101 @@
+<main class="order-page">
+  <div class="container py-5">
+    @if (loading()) {
+      <div class="order-card">
+        <h2>Caricamento ordine...</h2>
+      </div>
+    } @else if (error()) {
+      <div class="order-card error-card">
+        <h2>Errore</h2>
+        <p>{{ error() }}</p>
+        <a routerLink="/products" class="back-link">Torna ai prodotti</a>
+      </div>
+    } @else if (ordine(); as order) {
+      <div class="order-header">
+        <div>
+          <h1>Ordine #{{ order.id }}</h1>
+          <p class="order-meta">Data: {{ order.dataOrdine | date: 'dd/MM/yyyy HH:mm' }}</p>
+        </div>
+        <div class="status-box">
+          <span class="status-pill">{{ order.stato }}</span>
+          <span class="payment-pill">{{ order.paymentStatus }}</span>
+        </div>
+      </div>
+
+      <div class="order-grid">
+        <section class="order-card">
+          <h2>Dati cliente</h2>
+          <div class="info-list">
+            <div class="info-row">
+              <span>Nome</span>
+              <strong>{{ order.nomeCliente || '-' }}</strong>
+            </div>
+            <div class="info-row">
+              <span>Cognome</span>
+              <strong>{{ order.cognomeCliente || '-' }}</strong>
+            </div>
+            <div class="info-row">
+              <span>Email</span>
+              <strong>{{ order.emailCliente }}</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="order-card">
+          <h2>Indirizzo di spedizione</h2>
+          <div class="info-list">
+            <div class="info-row">
+              <span>Indirizzo</span>
+              <strong>{{ order.indirizzoSpedizione }}</strong>
+            </div>
+            <div class="info-row">
+              <span>CAP</span>
+              <strong>{{ order.postalCode }}</strong>
+            </div>
+            <div class="info-row">
+              <span>Città</span>
+              <strong>{{ order.city }}</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="order-card order-products">
+          <h2>Prodotti</h2>
+
+          @for (item of order.dettagli; track item.idDettaglio) {
+            <div class="product-row">
+              <div>
+                <h3>{{ item.nomeProdotto }}</h3>
+                <p>Quantità: {{ item.quantita }}</p>
+              </div>
+              <div class="product-prices">
+                <span>€ {{ item.prezzoUnitario | number: '1.2-2' }}</span>
+                <strong>€ {{ item.subtotale | number: '1.2-2' }}</strong>
+              </div>
+            </div>
+          }
+        </section>
+
+        <aside class="order-card">
+          <h2>Riepilogo</h2>
+          <div class="info-row">
+            <span>Totale ordine</span>
+            <strong class="total-amount">€ {{ order.totale | number: '1.2-2' }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span>Stato ordine</span>
+            <strong>{{ order.stato }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span>Stato pagamento</span>
+            <strong>{{ order.paymentStatus }}</strong>
+          </div>
+
+          <a routerLink="/products" class="back-link mt-3">Continua lo shopping</a>
+        </aside>
+      </div>
+    }
+  </div>
+</main>

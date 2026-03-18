@@ -1,9 +1,17 @@
+const crypto = require('crypto');
 const db = require('../config/db');
+const { createPaymentIntentForOrdine } = require('./pagamentiService');
 
 const mapOrdineRow = (row) => {
   return {
     id: row.id_ordine,
     idCliente: row.id_cliente,
+    emailCliente: row.email_cliente,
+    nomeCliente: row.nome_cliente,
+    cognomeCliente: row.cognome_cliente,
+    guestToken: row.guest_token,
+    stripePaymentIntentId: row.stripe_payment_intent_id,
+    paymentStatus: row.payment_status,
     dataOrdine: row.data_ordine,
     stato: row.stato,
     totale: Number(row.totale),
@@ -19,6 +27,12 @@ const getOrdineById = async (idOrdine) => {
     SELECT
       id_ordine,
       id_cliente,
+      email_cliente,
+      nome_cliente,
+      cognome_cliente,
+      guest_token,
+      stripe_payment_intent_id,
+      payment_status,
       data_ordine,
       stato,
       totale,
@@ -30,6 +44,38 @@ const getOrdineById = async (idOrdine) => {
     LIMIT 1
     `,
     [idOrdine],
+  );
+
+  if (rows.length === 0) {
+    return null;
+  }
+
+  return mapOrdineRow(rows[0]);
+};
+
+const getOrdineByPaymentIntentId = async (paymentIntentId) => {
+  const [rows] = await db.query(
+    `
+    SELECT
+      id_ordine,
+      id_cliente,
+      email_cliente,
+      nome_cliente,
+      cognome_cliente,
+      guest_token,
+      stripe_payment_intent_id,
+      payment_status,
+      data_ordine,
+      stato,
+      totale,
+      indirizzo_spedizione,
+      postal_code,
+      city
+    FROM ordini
+    WHERE stripe_payment_intent_id = ?
+    LIMIT 1
+    `,
+    [paymentIntentId],
   );
 
   if (rows.length === 0) {
@@ -84,30 +130,21 @@ const getOrdineCompletoById = async (idOrdine) => {
   };
 };
 
-const createOrdine = async ({ idCliente, prodotti, indirizzoSpedizione, postalCode, city }) => {
+const createCheckoutOrdineService = async ({
+  idCliente = null,
+  prodotti,
+  indirizzoSpedizione,
+  postalCode,
+  city,
+  email,
+  nome = null,
+  cognome = null,
+}) => {
   const connection = await db.getConnection();
 
   try {
     await connection.beginTransaction();
 
-    // Verifica che il cliente esista
-    const [clienteRows] = await connection.query(
-      `
-      SELECT id_cliente
-      FROM clienti
-      WHERE id_cliente = ?
-      LIMIT 1
-      `,
-      [idCliente],
-    );
-
-    if (clienteRows.length === 0) {
-      const error = new Error('Cliente non trovato');
-      error.statusCode = 404;
-      throw error;
-    }
-
-    // L'ordine deve contenere almeno un prodotto
     if (!Array.isArray(prodotti) || prodotti.length === 0) {
       const error = new Error("L'ordine deve contenere almeno un prodotto");
       error.statusCode = 400;
@@ -127,8 +164,6 @@ const createOrdine = async ({ idCliente, prodotti, indirizzoSpedizione, postalCo
         throw error;
       }
 
-      // Verifica esistenza prodotto e disponibilità stock
-      // Qui NON sottraiamo ancora lo stock
       const [prodottoRows] = await connection.query(
         `
         SELECT
@@ -170,25 +205,40 @@ const createOrdine = async ({ idCliente, prodotti, indirizzoSpedizione, postalCo
       });
     }
 
-    // Creazione testata ordine
+    const guestToken = idCliente ? null : crypto.randomBytes(32).toString('hex');
+
     const [ordineResult] = await connection.query(
       `
       INSERT INTO ordini (
         id_cliente,
+        email_cliente,
+        nome_cliente,
+        cognome_cliente,
+        guest_token,
         stato,
+        payment_status,
         totale,
         indirizzo_spedizione,
         postal_code,
         city
       )
-      VALUES (?, 'in_attesa', ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, 'in_attesa', 'requires_payment', ?, ?, ?, ?)
       `,
-      [idCliente, totaleOrdine, indirizzoSpedizione, postalCode, city],
+      [
+        idCliente,
+        email,
+        nome,
+        cognome,
+        guestToken,
+        totaleOrdine,
+        indirizzoSpedizione,
+        postalCode,
+        city,
+      ],
     );
 
     const idOrdine = ordineResult.insertId;
 
-    // Creazione righe ordine
     for (const riga of righeOrdine) {
       await connection.query(
         `
@@ -205,9 +255,257 @@ const createOrdine = async ({ idCliente, prodotti, indirizzoSpedizione, postalCo
       );
     }
 
+    const paymentIntent = await createPaymentIntentForOrdine({
+      idOrdine,
+      amount: totaleOrdine,
+      email,
+      guestToken,
+      idCliente,
+    });
+
+    await connection.query(
+      `
+      UPDATE ordini
+      SET stripe_payment_intent_id = ?, payment_status = 'requires_payment'
+      WHERE id_ordine = ?
+      `,
+      [paymentIntent.id, idOrdine],
+    );
+
     await connection.commit();
 
-    return getOrdineCompletoById(idOrdine);
+    return {
+      idOrdine,
+      guestToken,
+      clientSecret: paymentIntent.client_secret,
+      amount: totaleOrdine,
+      currency: 'eur',
+    };
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
+const markOrdineAsPaid = async ({ idOrdine, paymentIntentId }) => {
+  const connection = await db.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const [ordineRows] = await connection.query(
+      `
+      SELECT
+        id_ordine,
+        stato,
+        payment_status,
+        stripe_payment_intent_id
+      FROM ordini
+      WHERE id_ordine = ?
+      LIMIT 1
+      FOR UPDATE
+      `,
+      [idOrdine],
+    );
+
+    if (ordineRows.length === 0) {
+      const error = new Error('Ordine non trovato');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const ordine = ordineRows[0];
+
+    if (ordine.stato === 'pagato' && ordine.payment_status === 'succeeded') {
+      await connection.commit();
+      return;
+    }
+
+    const [righe] = await connection.query(
+      `
+      SELECT id_prodotto, quantita
+      FROM dettaglio_ordine
+      WHERE id_ordine = ?
+      `,
+      [idOrdine],
+    );
+
+    for (const riga of righe) {
+      const [productRows] = await connection.query(
+        `
+        SELECT id_prodotto, stock
+        FROM prodotti
+        WHERE id_prodotto = ?
+        LIMIT 1
+        FOR UPDATE
+        `,
+        [riga.id_prodotto],
+      );
+
+      if (productRows.length === 0) {
+        const error = new Error(`Prodotto con id ${riga.id_prodotto} non trovato`);
+        error.statusCode = 404;
+        throw error;
+      }
+
+      const stockAttuale = Number(productRows[0].stock);
+      const quantita = Number(riga.quantita);
+
+      if (stockAttuale < quantita) {
+        const error = new Error(`Stock insufficiente durante finalizzazione ordine ${idOrdine}`);
+        error.statusCode = 400;
+        throw error;
+      }
+
+      await connection.query(
+        `
+        UPDATE prodotti
+        SET stock = stock - ?
+        WHERE id_prodotto = ?
+        `,
+        [quantita, riga.id_prodotto],
+      );
+    }
+
+    await connection.query(
+      `
+      UPDATE ordini
+      SET
+        stato = 'pagato',
+        payment_status = 'succeeded',
+        stripe_payment_intent_id = ?
+      WHERE id_ordine = ?
+      `,
+      [paymentIntentId, idOrdine],
+    );
+
+    await connection.commit();
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
+const markOrdineAsPaymentFailed = async ({ paymentIntentId }) => {
+  await db.query(
+    `
+    UPDATE ordini
+    SET payment_status = 'failed'
+    WHERE stripe_payment_intent_id = ?
+    `,
+    [paymentIntentId],
+  );
+};
+
+const markOrdineAsProcessing = async ({ paymentIntentId }) => {
+  await db.query(
+    `
+    UPDATE ordini
+    SET payment_status = 'processing'
+    WHERE stripe_payment_intent_id = ?
+    `,
+    [paymentIntentId],
+  );
+};
+
+const confirmPagamentoOrdineService = async ({ idOrdine, paymentIntentId }) => {
+  const connection = await db.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const [ordineRows] = await connection.query(
+      `
+      SELECT
+        id_ordine,
+        stato,
+        payment_status
+      FROM ordini
+      WHERE id_ordine = ?
+      LIMIT 1
+      FOR UPDATE
+      `,
+      [idOrdine],
+    );
+
+    if (ordineRows.length === 0) {
+      const error = new Error('Ordine non trovato');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const ordine = ordineRows[0];
+
+    if (ordine.stato === 'pagato' && ordine.payment_status === 'succeeded') {
+      await connection.commit();
+      return { alreadyConfirmed: true };
+    }
+
+    const [righe] = await connection.query(
+      `
+      SELECT id_prodotto, quantita
+      FROM dettaglio_ordine
+      WHERE id_ordine = ?
+      `,
+      [idOrdine],
+    );
+
+    for (const riga of righe) {
+      const [productRows] = await connection.query(
+        `
+        SELECT id_prodotto, stock
+        FROM prodotti
+        WHERE id_prodotto = ?
+        LIMIT 1
+        FOR UPDATE
+        `,
+        [riga.id_prodotto],
+      );
+
+      if (productRows.length === 0) {
+        const error = new Error(`Prodotto con id ${riga.id_prodotto} non trovato`);
+        error.statusCode = 404;
+        throw error;
+      }
+
+      const stockAttuale = Number(productRows[0].stock);
+      const quantita = Number(riga.quantita);
+
+      if (stockAttuale < quantita) {
+        const error = new Error(`Stock insufficiente durante finalizzazione ordine ${idOrdine}`);
+        error.statusCode = 400;
+        throw error;
+      }
+
+      await connection.query(
+        `
+        UPDATE prodotti
+        SET stock = stock - ?
+        WHERE id_prodotto = ?
+        `,
+        [quantita, riga.id_prodotto],
+      );
+    }
+
+    await connection.query(
+      `
+      UPDATE ordini
+      SET
+        stato = 'pagato',
+        payment_status = 'succeeded',
+        stripe_payment_intent_id = ?
+      WHERE id_ordine = ?
+      `,
+      [paymentIntentId, idOrdine],
+    );
+
+    await connection.commit();
+
+    return { confirmed: true };
   } catch (error) {
     await connection.rollback();
     throw error;
@@ -218,7 +516,12 @@ const createOrdine = async ({ idCliente, prodotti, indirizzoSpedizione, postalCo
 
 module.exports = {
   getOrdineById,
+  getOrdineByPaymentIntentId,
   getDettagliOrdineByIdOrdine,
   getOrdineCompletoById,
-  createOrdine,
+  createCheckoutOrdineService,
+  markOrdineAsPaid,
+  markOrdineAsPaymentFailed,
+  markOrdineAsProcessing,
+  confirmPagamentoOrdineService,
 };

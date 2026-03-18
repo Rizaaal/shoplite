@@ -1,17 +1,15 @@
 const express = require('express');
 const {
-  addOrdine,
+  createCheckoutOrdine,
   getSingleOrdine,
-  createOrdinePaymentIntent,
   confirmOrdinePagamento,
 } = require('../controllers/ordiniController');
-const { protectedRoute } = require('../middlewares/protectedRoute');
+const { optionalAuth } = require('../middlewares/optionalAuth');
 
 const router = express.Router();
 
-router.post('/', protectedRoute, addOrdine);
-router.get('/:id', protectedRoute, getSingleOrdine);
-router.post('/:id/pagamento-intent', protectedRoute, createOrdinePaymentIntent);
-router.post('/:id/conferma-pagamento', protectedRoute, confirmOrdinePagamento);
+router.post('/checkout', optionalAuth, createCheckoutOrdine);
+router.get('/:id', optionalAuth, getSingleOrdine);
+router.post('/:id/conferma-pagamento', optionalAuth, confirmOrdinePagamento);
 
 module.exports = router;

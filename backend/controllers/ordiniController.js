@@ -1,35 +1,62 @@
-const { createOrdine, getOrdineCompletoById } = require('../services/ordiniService');
 const {
-  createPaymentIntentForOrdine,
-  confirmPagamentoOrdine,
-} = require('../services/pagamentiService');
+  createCheckoutOrdineService,
+  getOrdineCompletoById,
+  confirmPagamentoOrdineService,
+} = require('../services/ordiniService');
+const { getClienteById } = require('../services/clientiService');
 const { sendSuccess, sendError } = require('../utils/response');
 
-const addOrdine = async (req, res) => {
+const createCheckoutOrdine = async (req, res) => {
   try {
-    const { prodotti, indirizzoSpedizione, postalCode, city } = req.body;
+    const { prodotti, indirizzoSpedizione, postalCode, city, email, nome, cognome } = req.body;
 
-    // L'id cliente arriva dal token JWT
-    const idCliente = req.user.id;
+    const idCliente = Number(req.user?.id ?? req.user?.id_cliente ?? req.user?.userId ?? 0) || null;
+
+    if (!Array.isArray(prodotti) || prodotti.length === 0) {
+      return sendError(res, "L'ordine deve contenere almeno un prodotto", 400);
+    }
 
     if (!indirizzoSpedizione || !postalCode || !city) {
       return sendError(res, 'indirizzoSpedizione, postalCode e city sono obbligatori', 400);
     }
 
-    const ordine = await createOrdine({
+    let checkoutEmail = email || null;
+    let checkoutNome = nome || null;
+    let checkoutCognome = cognome || null;
+
+    if (idCliente) {
+      const cliente = await getClienteById(idCliente);
+
+      if (!cliente) {
+        return sendError(res, 'Cliente non trovato', 404);
+      }
+
+      checkoutEmail = cliente.email;
+      checkoutNome = cliente.nome;
+      checkoutCognome = cliente.cognome;
+    } else {
+      if (!checkoutEmail) {
+        return sendError(res, 'Email obbligatoria per guest checkout', 400);
+      }
+    }
+
+    const result = await createCheckoutOrdineService({
       idCliente,
       prodotti,
       indirizzoSpedizione,
       postalCode,
       city,
+      email: checkoutEmail,
+      nome: checkoutNome,
+      cognome: checkoutCognome,
     });
 
-    return sendSuccess(res, ordine, 201);
+    return sendSuccess(res, result, 201);
   } catch (error) {
     console.error(error);
     return sendError(
       res,
-      error.message || "server error: couldn't create ordine",
+      error.message || "server error: couldn't create checkout ordine",
       error.statusCode || 500,
     );
   }
@@ -38,15 +65,27 @@ const addOrdine = async (req, res) => {
 const getSingleOrdine = async (req, res) => {
   try {
     const idOrdine = Number(req.params.id);
+    const guestToken = req.query.guestToken || req.headers['x-guest-token'] || null;
+
     const ordine = await getOrdineCompletoById(idOrdine);
 
     if (!ordine) {
       return sendError(res, 'Ordine non trovato', 404);
     }
 
-    // Solo admin può vedere qualsiasi ordine
-    // Il cliente può vedere solo i propri ordini
-    if (req.user.role !== 'admin' && Number(req.user.id) !== Number(ordine.idCliente)) {
+    if (ordine.idCliente) {
+      if (!req.user) {
+        return sendError(res, 'Autenticazione richiesta', 401);
+      }
+
+      if (req.user.role !== 'admin' && Number(req.user.id) !== Number(ordine.idCliente)) {
+        return sendError(res, 'Forbidden', 403);
+      }
+
+      return sendSuccess(res, ordine);
+    }
+
+    if (!guestToken || guestToken !== ordine.guestToken) {
       return sendError(res, 'Forbidden', 403);
     }
 
@@ -57,10 +96,15 @@ const getSingleOrdine = async (req, res) => {
   }
 };
 
-const createOrdinePaymentIntent = async (req, res, next) => {
+const confirmOrdinePagamento = async (req, res) => {
   try {
     const idOrdine = Number(req.params.id);
-    const { metodo } = req.body;
+    const { paymentIntentId } = req.body;
+    const guestToken = req.headers['x-guest-token'] || req.body.guestToken || null;
+
+    if (!paymentIntentId) {
+      return sendError(res, 'paymentIntentId obbligatorio', 400);
+    }
 
     const ordine = await getOrdineCompletoById(idOrdine);
 
@@ -68,53 +112,38 @@ const createOrdinePaymentIntent = async (req, res, next) => {
       return sendError(res, 'Ordine non trovato', 404);
     }
 
-    // Solo admin o proprietario ordine
-    if (req.user.role !== 'admin' && Number(req.user.id) !== Number(ordine.idCliente)) {
-      return sendError(res, 'Forbidden', 403);
+    if (ordine.idCliente) {
+      if (!req.user) {
+        return sendError(res, 'Autenticazione richiesta', 401);
+      }
+
+      if (req.user.role !== 'admin' && Number(req.user.id) !== Number(ordine.idCliente)) {
+        return sendError(res, 'Forbidden', 403);
+      }
+    } else {
+      if (!guestToken || guestToken !== ordine.guestToken) {
+        return sendError(res, 'Forbidden', 403);
+      }
     }
 
-    const result = await createPaymentIntentForOrdine({
-      idOrdine,
-      metodo,
-    });
-
-    return sendSuccess(res, result, 201);
-  } catch (error) {
-    return next(error);
-  }
-};
-
-const confirmOrdinePagamento = async (req, res, next) => {
-  try {
-    const idOrdine = Number(req.params.id);
-    const { paymentIntentId, metodo } = req.body;
-
-    const ordine = await getOrdineCompletoById(idOrdine);
-
-    if (!ordine) {
-      return sendError(res, 'Ordine non trovato', 404);
-    }
-
-    // Solo admin o proprietario ordine
-    if (req.user.role !== 'admin' && Number(req.user.id) !== Number(ordine.idCliente)) {
-      return sendError(res, 'Forbidden', 403);
-    }
-
-    const result = await confirmPagamentoOrdine({
+    const result = await confirmPagamentoOrdineService({
       idOrdine,
       paymentIntentId,
-      metodo,
     });
 
     return sendSuccess(res, result);
   } catch (error) {
-    return next(error);
+    console.error(error);
+    return sendError(
+      res,
+      error.message || "server error: couldn't confirm ordine pagamento",
+      error.statusCode || 500,
+    );
   }
 };
 
 module.exports = {
-  addOrdine,
+  createCheckoutOrdine,
   getSingleOrdine,
-  createOrdinePaymentIntent,
   confirmOrdinePagamento,
 };
