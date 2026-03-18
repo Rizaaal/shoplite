@@ -7,6 +7,7 @@ import { Admin } from './pages/admin/admin';
 import { authGuard } from './guards/auth-guard';
 import { Products } from './pages/products/products';
 import { ProductDetail } from './pages/product-detail/product-detail';
+import { Carrello } from './pages/carrello/carrello';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -18,6 +19,7 @@ export const routes: Routes = [
       { path: 'admin', canActivate: [authGuard], component: Admin },
       { path: 'products', component: Products },
       { path: 'product-detail/:id', component: ProductDetail },
+      { path: 'cart', component: Carrello },
     ],
   },
   { path: 'sign-in', component: Login },

@@ -1,9 +1,10 @@
 import { Component, computed, inject } from '@angular/core';
-import { ProductCard } from '../../components/shared/product-card/product-card';
+import { Product, ProductCard } from '../../components/shared/product-card/product-card';
 import { ChiSiamo } from '../../components/shared/chi-siamo/chi-siamo';
 import { ProductsService } from '../../services/products.service';
 import { Router, RouterLink } from '@angular/router'; // Fondamentale per navigare
 import { CommonModule } from '@angular/common'; // Serve per gestire i dati
+import { CartService } from '../../services/cart-service';
 
 @Component({
   selector: 'app-home',
@@ -14,6 +15,7 @@ import { CommonModule } from '@angular/common'; // Serve per gestire i dati
 })
 export class Home {
   productsService = inject(ProductsService);
+  cartService = inject(CartService);
   router = inject(Router);
 
   featuredProducts = computed(() => {
@@ -30,5 +32,9 @@ export class Home {
 
   goToDetail(productId: number) {
     this.router.navigate(['/product-detail', productId]);
+  }
+
+  onAddCart(product: Product) {
+    this.cartService.add(product);
   }
 }

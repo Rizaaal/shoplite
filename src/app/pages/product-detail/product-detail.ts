@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router'; // Aggiungi Router
 import { ProductCard } from '../../components/shared/product-card/product-card'; // Importa la tua card
 import { ProductsService } from '../../services/products.service';
+import { CartService } from '../../services/cart-service';
 
 @Component({
   selector: 'app-product-detail',
@@ -13,6 +14,7 @@ import { ProductsService } from '../../services/products.service';
 })
 export class ProductDetail implements OnInit {
   productsService = inject(ProductsService);
+  cartService = inject(CartService);
 
   product: any;
   suggestedProducts: any[] = []; // Array per le card in basso
@@ -54,5 +56,6 @@ export class ProductDetail implements OnInit {
 
   addToCart() {
     console.log('Prodotto aggiunto:', this.product.name);
+    this.cartService.add(this.product);
   }
 }

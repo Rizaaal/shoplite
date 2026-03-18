@@ -31,7 +31,8 @@ li {
 }
 
 .service li:hover,
-.utilities .login:hover {
+.utilities .login:hover,
+.carrello:hover {
   color: #06B6D4;
   cursor: pointer
 }
@@ -53,4 +54,30 @@ button.login:hover {
 
 button.login svg {
   width: 1.2rem;
+}
+
+/* Container per gestire il posizionamento assoluto del badge */
+.cart-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Stile del pallino (badge) */
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -5px;
+  background-color: #EF4444; /* Rosso */
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 9999px; /* Arrotondato */
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #1E293B; /* Stesso colore del fondo nav per stacco */
 }

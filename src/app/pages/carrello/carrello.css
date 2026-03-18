@@ -1,0 +1,247 @@
+/*.cart-container {
+  height: 80vh;
+  padding: 1rem;
+}
+
+.cart-empty {
+  margin-top: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  background-color: rgb(37, 99, 235);
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+  padding: 0.7rem;
+  border-width: 0;
+  border-radius: 0.7rem;
+}
+
+.btn-primary {
+  margin-top: 1.5rem;
+}
+
+.cart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+img {
+  max-width: 50%;
+  object-fit: cover;
+}
+
+.cart-list {
+  padding: 1rem;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  height: 100px;
+  background-color: #e2e2e2;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  padding: .5rem;
+}
+
+.info-container {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+.cart-item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-item-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.btn-qty {
+  padding: .3rem;
+
+}
+*/
+
+.cart-page {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+/* Layout a due colonne */
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 992px) {
+  .cart-layout { grid-template-columns: 1fr; }
+}
+
+/* Scheda Prodotto */
+.product-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  gap: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.product-img-box {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+.product-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.product-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.product-name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.product-cat {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+/* Pulsanti Qty e Prezzo */
+.product-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.qty-selector {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.qty-selector button {
+  background: #f8fafc;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  color: #1e293b;
+  transition: 0.2s;
+}
+
+.qty-selector button:hover:not(:disabled) { background: #e2e8f0; }
+.qty-num { padding: 0 1rem; font-weight: 600; }
+
+.product-price { text-align: right; }
+.unit-price { display: block; font-size: 0.8rem; color: #64748b; }
+.total-price { font-size: 1.2rem; font-weight: 700; color: #2563eb; }
+
+/* Sidebar Riepilogo */
+.summary-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  border: 1px solid #e2e8f0;
+  position: sticky;
+  top: 2rem;
+}
+
+.summary-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; }
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  color: #475569;
+}
+
+.total {
+  margin-top: 1rem;
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.total-value { font-size: 1.5rem; color: #2563eb; }
+
+/* Bottoni */
+.btn-checkout {
+  width: 100%;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 1.5rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-checkout:hover { background: #1d4ed8; transform: translateY(-2px); }
+
+.btn-remove-icon {
+  background: transparent;
+  color: #94a3b8;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  transition: 0.2s;
+}
+
+.btn-remove-icon:hover { color: #ef4444; }
+
+.btn-link {
+  background: transparent;
+  color: #64748b;
+  border: none;
+  width: 100%;
+  margin-top: 1rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.cart-empty-state {
+  text-align: center;
+  padding: 4rem 1rem;
+  background: white;
+  border-radius: 20px;
+}

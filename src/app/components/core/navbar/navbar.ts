@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth-service';
+import { CartService } from '../../../services/cart-service';
 
 @Component({
   selector: 'app-navbar',
