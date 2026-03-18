@@ -13,6 +13,7 @@ export class Navbar {
   cartService = inject(CartService);
   authService = inject(AuthService);
   isLogged = signal<boolean>(this.authService.isLogged());
+  isAdmin = signal<boolean>(this.authService.isAdmin());
 
   logout() {
     this.authService.logout();

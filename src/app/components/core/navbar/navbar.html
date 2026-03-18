@@ -20,6 +20,9 @@
     <ul class="service">
       <li routerLink="/home">Home</li>
       <li routerLink="/products">Categorie</li>
+      @if (isAdmin()) {
+        <li routerLink="/admin">Admin</li>
+      }
     </ul>
 
     <ul class="utilities">

@@ -1,5 +1,6 @@
 import { Injectable, resource, signal } from '@angular/core';
 import { baseApiUrl, localStorageKey, roles } from '../constants';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -77,8 +78,21 @@ export class AuthService {
     localStorage.removeItem(localStorageKey);
   }
 
-  isLogged() {
+  isLogged(): boolean {
     return !!localStorage.getItem(localStorageKey);
+  }
+
+  isAdmin() {
+    const localStorageValue = localStorage.getItem(localStorageKey);
+
+    // se non esiste sicuramente non è admin
+    if (!localStorageValue) return false;
+
+    // ottieni i dati dell'utente loggato
+    const { token } = JSON.parse(localStorageValue);
+    const userData: User = jwtDecode(token);
+
+    return userData.role === roles.admin;
   }
 }
 
