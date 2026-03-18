@@ -15,7 +15,7 @@ export class ProdottoFormComponent {
   @Input() loading = false;
 
   @Output() createProduct = new EventEmitter<{
-    formData: Product;
+    formData: Omit<Product, 'id'>;
     file: File | null;
   }>();
 
@@ -43,7 +43,7 @@ export class ProdottoFormComponent {
 
     const v = this.form.value;
 
-    const payload: Product = {
+    const payload: Omit<Product, 'id'> = {
       nome: v.nome!,
       descrizione: v.descrizione!,
       prezzo: Number(v.prezzo),

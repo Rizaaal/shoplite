@@ -10,6 +10,7 @@ import { CartService } from '../../../services/cart-service';
   styleUrl: './navbar.css',
 })
 export class Navbar {
+  cartService = inject(CartService);
   authService = inject(AuthService);
   isLogged = signal<boolean>(this.authService.isLogged());
 
@@ -17,4 +18,6 @@ export class Navbar {
     this.authService.logout();
     this.isLogged.set(false);
   }
+
+  cartCount = computed(() => this.cartService.items().reduce((acc, item) => acc + item.stock, 0));
 }

@@ -29,20 +29,20 @@ export class ProductCard {
     }
 
     const currentItem = this.product();
-    const existingItem = this.cartService.items().find(i => i.id === currentItem.id);
-    
+    const existingItem = this.cartService.items().find((i) => i.id === currentItem.id);
+
     if (existingItem) {
       this.cartService.updateQty(currentItem.id, existingItem.stock + 1);
     } else {
       this.cartService.items.set([...this.cartService.items(), { ...currentItem, stock: 1 }]);
     }
-    
+
     this.cartEvent.emit(currentItem);
   }
 }
 
 export type Product = {
-  id?: number;
+  id: number;
   nome: string;
   descrizione: string;
   categoria: string;
