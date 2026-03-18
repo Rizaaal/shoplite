@@ -3,6 +3,8 @@ import { Home } from './pages/home/home';
 import { Login } from './pages/login/login';
 import { Main } from './layout/main/main';
 import { Register } from './pages/register/register';
+import { Admin } from './pages/admin/admin';
+import { authGuard } from './guards/auth-guard';
 import { Products } from './pages/products/products';
 import { ProductDetail } from './pages/product-detail/product-detail';
 import { Carrello } from './pages/carrello/carrello';
@@ -14,6 +16,7 @@ export const routes: Routes = [
     component: Main,
     children: [
       { path: 'home', component: Home },
+      { path: 'admin', canActivate: [authGuard], component: Admin },
       { path: 'products', component: Products },
       { path: 'product-detail/:id', component: ProductDetail },
       { path: 'cart', component: Carrello },

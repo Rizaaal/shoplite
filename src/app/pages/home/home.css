@@ -52,7 +52,6 @@ p {
 .product-card-section {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   max-width: 1400px;
   margin: auto;
   padding-bottom: 3rem;
@@ -61,7 +60,7 @@ p {
 .card-product-container {
   display: flex;
   justify-content: space-between;
-    gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .product-card-header {
@@ -74,6 +73,7 @@ p {
 .product-card-header p {
   color: rgb(37, 99, 235);
 }
+
 .product-card-header p:hover {
   color: rgb(6, 182, 212);
   cursor: pointer;
@@ -82,6 +82,7 @@ p {
 app-product-card:hover {
   cursor: pointer;
 }
+
 /* fine */
 
 .carousel img {

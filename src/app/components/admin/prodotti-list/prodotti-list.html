@@ -1,0 +1,16 @@
+<div *ngIf="products.length; else empty">
+  <div *ngFor="let p of products" class="border p-2">
+    <img [src]="p.image || ''" width="150" />
+
+    <h3>{{ p.nome }}</h3>
+    <p>{{ p.descrizione }}</p>
+
+    <p>€ {{ p.prezzo }}</p>
+    <p>{{ p.categoria }}</p>
+    <p>Stock: {{ p.stock }}</p>
+  </div>
+</div>
+
+<ng-template #empty>
+  <p>Nessun prodotto</p>
+</ng-template>

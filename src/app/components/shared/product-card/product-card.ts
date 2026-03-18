@@ -42,11 +42,11 @@ export class ProductCard {
 }
 
 export type Product = {
-  id: number;
+  id?: number;
   nome: string;
   descrizione: string;
   categoria: string;
   prezzo: number;
   stock: number;
-  image: string;
+  image: string | null;
 };

@@ -20,7 +20,6 @@ export class Login {
   });
 
   constructor() {
-    console.log(this.authService.user.value());
     effect(() => {
       // salta l'effetto se non abbiamo chiamato onLogin
       if (!this.authService.credentials()) return;

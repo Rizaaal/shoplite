@@ -11,12 +11,7 @@ import { CartService } from '../../../services/cart-service';
 })
 export class Navbar {
   authService = inject(AuthService);
-  cartService = inject(CartService);
-  isLogged = signal<boolean>(this.authService.user.hasValue());
-  
-  cartCount = computed(() => 
-    this.cartService.items().reduce((acc, item) => acc + item.stock, 0)
-  );
+  isLogged = signal<boolean>(this.authService.isLogged());
 
   logout() {
     this.authService.logout();
