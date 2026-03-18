@@ -1,12 +1,14 @@
-import { Injectable, resource, signal } from '@angular/core';
+import { inject, Injectable, resource, signal } from '@angular/core';
 import { baseApiUrl, localStorageKey, roles } from '../constants';
 import { jwtDecode } from 'jwt-decode';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   credentials = signal<Credentials | null>(null);
+  router = inject(Router);
 
   user = resource<Session | null, Credentials | null>({
     params: () => this.credentials(),
@@ -76,6 +78,7 @@ export class AuthService {
   logout() {
     this.credentials.set(null);
     localStorage.removeItem(localStorageKey);
+    this.router.navigate(['']);
   }
 
   isLogged(): boolean {
