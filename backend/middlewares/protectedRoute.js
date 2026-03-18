@@ -21,4 +21,3 @@ const protectedRoute = (req, res, next) => {
 module.exports = {
   protectedRoute,
 };
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJjaGljazc4IiwiaWF0IjoxNzczNTk2MTA5LCJleHAiOjE3NzM1OTk3MDl9.b63WhQ9uHXou-Hga4dAclx2jnWnDSajCkdi0nKfCpEk
