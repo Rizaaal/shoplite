@@ -412,6 +412,108 @@ const markOrdineAsProcessing = async ({ paymentIntentId }) => {
   );
 };
 
+const confirmPagamentoOrdineService = async ({ idOrdine, paymentIntentId }) => {
+  const connection = await db.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const [ordineRows] = await connection.query(
+      `
+      SELECT
+        id_ordine,
+        stato,
+        payment_status
+      FROM ordini
+      WHERE id_ordine = ?
+      LIMIT 1
+      FOR UPDATE
+      `,
+      [idOrdine],
+    );
+
+    if (ordineRows.length === 0) {
+      const error = new Error('Ordine non trovato');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const ordine = ordineRows[0];
+
+    if (ordine.stato === 'pagato' && ordine.payment_status === 'succeeded') {
+      await connection.commit();
+      return { alreadyConfirmed: true };
+    }
+
+    const [righe] = await connection.query(
+      `
+      SELECT id_prodotto, quantita
+      FROM dettaglio_ordine
+      WHERE id_ordine = ?
+      `,
+      [idOrdine],
+    );
+
+    for (const riga of righe) {
+      const [productRows] = await connection.query(
+        `
+        SELECT id_prodotto, stock
+        FROM prodotti
+        WHERE id_prodotto = ?
+        LIMIT 1
+        FOR UPDATE
+        `,
+        [riga.id_prodotto],
+      );
+
+      if (productRows.length === 0) {
+        const error = new Error(`Prodotto con id ${riga.id_prodotto} non trovato`);
+        error.statusCode = 404;
+        throw error;
+      }
+
+      const stockAttuale = Number(productRows[0].stock);
+      const quantita = Number(riga.quantita);
+
+      if (stockAttuale < quantita) {
+        const error = new Error(`Stock insufficiente durante finalizzazione ordine ${idOrdine}`);
+        error.statusCode = 400;
+        throw error;
+      }
+
+      await connection.query(
+        `
+        UPDATE prodotti
+        SET stock = stock - ?
+        WHERE id_prodotto = ?
+        `,
+        [quantita, riga.id_prodotto],
+      );
+    }
+
+    await connection.query(
+      `
+      UPDATE ordini
+      SET
+        stato = 'pagato',
+        payment_status = 'succeeded',
+        stripe_payment_intent_id = ?
+      WHERE id_ordine = ?
+      `,
+      [paymentIntentId, idOrdine],
+    );
+
+    await connection.commit();
+
+    return { confirmed: true };
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
 module.exports = {
   getOrdineById,
   getOrdineByPaymentIntentId,
@@ -421,4 +523,5 @@ module.exports = {
   markOrdineAsPaid,
   markOrdineAsPaymentFailed,
   markOrdineAsProcessing,
+  confirmPagamentoOrdineService,
 };

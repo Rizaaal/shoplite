@@ -3,81 +3,219 @@
     <h1 class="mb-4">Il tuo Carrello ({{ cartItems().length }} articoli)</h1>
 
     @if (cartItems().length === 0) {
-    <div class="cart-empty-state">
-      <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#94a3b8"
-        stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="8" cy="21" r="1"></circle>
-        <circle cx="19" cy="21" r="1"></circle>
-        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
-      </svg>
-      <h2 class="mt-3">Il tuo carrello è vuoto</h2>
-      <p class="text-muted">Non hai ancora aggiunto prodotti.</p>
-      <button class="btn-primary mt-3" (click)="goBack()">Torna allo Shopping</button>
-    </div>
+      <div class="cart-empty-state">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="80"
+          height="80"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#94a3b8"
+          stroke-width="1"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="8" cy="21" r="1"></circle>
+          <circle cx="19" cy="21" r="1"></circle>
+          <path
+            d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"
+          ></path>
+        </svg>
+        <h2 class="mt-3">Il tuo carrello è vuoto</h2>
+        <p class="text-muted">Non hai ancora aggiunto prodotti.</p>
+        <button class="btn-primary mt-3" (click)="goBack()">Torna allo Shopping</button>
+      </div>
     } @else {
-    <div class="cart-layout">
-      <section class="cart-items-list">
-        @for (item of cartItems(); track item.id) {
-        <div class="product-card">
-          <div class="product-img-box">
-            <img [src]="item.image" [alt]="item.nome" />
-          </div>
-
-          <div class="product-details">
-            <div class="product-header">
-              <div>
-                <h3 class="product-name">{{ item.nome }}</h3>
-                <span class="product-cat">{{ item.categoria }}</span>
+      <div class="cart-layout">
+        <section class="cart-items-list">
+          @for (item of cartItems(); track item.id) {
+            <div class="product-card">
+              <div class="product-img-box">
+                <img [src]="item.image" [alt]="item.nome" />
               </div>
-              <button class="btn-remove-icon" (click)="removeItem(item.id)" title="Rimuovi">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 6h18"></path>
-                  <path d="M19 6l-1 14H6L5 6"></path>
-                  <path d="M9 6V4h6v2"></path>
-                </svg>
+
+              <div class="product-details">
+                <div class="product-header">
+                  <div>
+                    <h3 class="product-name">{{ item.nome }}</h3>
+                    <span class="product-cat">{{ item.categoria }}</span>
+                  </div>
+                  <button
+                    class="btn-remove-icon"
+                    (click)="removeItem(item.id)"
+                    title="Rimuovi"
+                    [disabled]="loading()"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 6h18"></path>
+                      <path d="M19 6l-1 14H6L5 6"></path>
+                      <path d="M9 6V4h6v2"></path>
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="product-actions">
+                  <div class="qty-selector">
+                    <button (click)="decreaseQty(item)" [disabled]="item.stock <= 1 || loading()">
+                      −
+                    </button>
+                    <span class="qty-num">{{ item.stock }}</span>
+                    <button (click)="increaseQty(item)" [disabled]="loading()">+</button>
+                  </div>
+
+                  <div class="product-price">
+                    <span class="unit-price">€ {{ item.prezzo | number: '1.2-2' }}</span>
+                    <span class="total-price"
+                      >€ {{ item.stock * item.prezzo | number: '1.2-2' }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </section>
+
+        <aside class="cart-summary">
+          <div class="summary-card">
+            <h2 class="summary-title">Checkout</h2>
+
+            <div class="summary-row">
+              <span>Subtotale</span>
+              <span>€ {{ total() | number: '1.2-2' }}</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Spedizione</span>
+              <span class="text-success">Gratis</span>
+            </div>
+
+            <hr />
+
+            <div class="summary-row total">
+              <span>Totale</span>
+              <span class="total-value">€ {{ total() | number: '1.2-2' }}</span>
+            </div>
+
+            <div class="checkout-form">
+              <h3 class="checkout-subtitle">Dati di spedizione</h3>
+
+              @if (!isLogged()) {
+                <div class="field-group">
+                  <label for="nome">Nome</label>
+                  <input
+                    id="nome"
+                    type="text"
+                    class="checkout-input"
+                    [ngModel]="form().nome"
+                    (ngModelChange)="updateField('nome', $event)"
+                    placeholder="Mario"
+                  />
+                </div>
+
+                <div class="field-group">
+                  <label for="cognome">Cognome</label>
+                  <input
+                    id="cognome"
+                    type="text"
+                    class="checkout-input"
+                    [ngModel]="form().cognome"
+                    (ngModelChange)="updateField('cognome', $event)"
+                    placeholder="Rossi"
+                  />
+                </div>
+
+                <div class="field-group">
+                  <label for="email">Email *</label>
+                  <input
+                    id="email"
+                    type="email"
+                    class="checkout-input"
+                    [ngModel]="form().email"
+                    (ngModelChange)="updateField('email', $event)"
+                    placeholder="mario@email.com"
+                  />
+                </div>
+              } @else {
+                <div class="checkout-info-box">
+                  <p class="checkout-info-title">Utente autenticato</p>
+                  <p class="checkout-info-text">
+                    Nome, cognome ed email verranno recuperati automaticamente dal tuo account.
+                  </p>
+                </div>
+              }
+
+              <div class="field-group">
+                <label for="indirizzoSpedizione">Indirizzo spedizione *</label>
+                <input
+                  id="indirizzoSpedizione"
+                  type="text"
+                  class="checkout-input"
+                  [ngModel]="form().indirizzoSpedizione"
+                  (ngModelChange)="updateField('indirizzoSpedizione', $event)"
+                  placeholder="Via Roma 10"
+                />
+              </div>
+
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="postalCode">CAP *</label>
+                  <input
+                    id="postalCode"
+                    type="text"
+                    class="checkout-input"
+                    [ngModel]="form().postalCode"
+                    (ngModelChange)="updateField('postalCode', $event)"
+                    placeholder="90100"
+                  />
+                </div>
+
+                <div class="field-group">
+                  <label for="city">Città *</label>
+                  <input
+                    id="city"
+                    type="text"
+                    class="checkout-input"
+                    [ngModel]="form().city"
+                    (ngModelChange)="updateField('city', $event)"
+                    placeholder="Palermo"
+                  />
+                </div>
+              </div>
+
+              <h3 class="checkout-subtitle">Pagamento</h3>
+
+              <div class="field-group">
+                <label>Dati carta</label>
+                <div id="card-element" class="stripe-card-box"></div>
+              </div>
+
+              @if (error()) {
+                <div class="payment-error">
+                  {{ error() }}
+                </div>
+              }
+
+              <button class="btn-checkout" (click)="checkout()" [disabled]="loading()">
+                {{ loading() ? 'Pagamento in corso...' : 'Paga ora' }}
+              </button>
+
+              <button class="btn-link" (click)="goBack()" [disabled]="loading()">
+                Continua lo shopping
               </button>
             </div>
-
-            <div class="product-actions">
-              <div class="qty-selector">
-                <button (click)="decreaseQty(item)" [disabled]="item.stock <= 1">−</button>
-                <span class="qty-num">{{ item.stock }}</span>
-                <button (click)="increaseQty(item)">+</button>
-              </div>
-              <div class="product-price">
-                <span class="unit-price">€ {{ item.prezzo | number: '1.2-2' }}</span>
-                <span class="total-price">€ {{ item.stock * item.prezzo | number: '1.2-2' }}</span>
-              </div>
-            </div>
           </div>
-        </div>
-        }
-      </section>
-
-      <aside class="cart-summary">
-        <div class="summary-card">
-          <h2 class="summary-title">Riepilogo Ordine</h2>
-          <div class="summary-row">
-            <span>Subtotale</span>
-            <span>€ {{ total() | number: '1.2-2' }}</span>
-          </div>
-          <div class="summary-row">
-            <span>Spedizione</span>
-            <span class="text-success">Gratis</span>
-          </div>
-          <hr />
-          <div class="summary-row total">
-            <span>Totale</span>
-            <span class="total-value">€ {{ total() | number: '1.2-2' }}</span>
-          </div>
-          <button class="btn-checkout" (click)="goToCheckout()">
-            Procedi all'acquisto
-          </button>
-          <button class="btn-link" (click)="goBack()">Continua lo shopping</button>
-        </div>
-      </aside>
-    </div>
+        </aside>
+      </div>
     }
   </div>
 </main>

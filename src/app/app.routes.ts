@@ -8,6 +8,7 @@ import { authGuard } from './guards/auth-guard';
 import { Products } from './pages/products/products';
 import { ProductDetail } from './pages/product-detail/product-detail';
 import { Carrello } from './pages/carrello/carrello';
+import { OrdineDettaglioComponent } from './pages/ordine-dettaglio/ordine-dettaglio';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -20,6 +21,7 @@ export const routes: Routes = [
       { path: 'products', component: Products },
       { path: 'product-detail/:id', component: ProductDetail },
       { path: 'cart', component: Carrello },
+      { path: 'ordini/:id', component: OrdineDettaglioComponent },
     ],
   },
   { path: 'sign-in', component: Login },

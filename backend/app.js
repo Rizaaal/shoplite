@@ -6,6 +6,7 @@ const clientiRoutes = require('./routes/clientiRoutes');
 const prodottiRoutes = require('./routes/prodottiRoutes');
 const ordiniRoutes = require('./routes/ordiniRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const stripeWebhookRoutes = require('./routes/stripeWebhookRoutes');
 
 const { notFound } = require('./middlewares/notFound');
 const { errorHandler } = require('./middlewares/errorHandler');

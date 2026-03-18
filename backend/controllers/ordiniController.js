@@ -1,4 +1,8 @@
-const { createCheckoutOrdineService, getOrdineCompletoById } = require('../services/ordiniService');
+const {
+  createCheckoutOrdineService,
+  getOrdineCompletoById,
+  confirmPagamentoOrdineService,
+} = require('../services/ordiniService');
 const { getClienteById } = require('../services/clientiService');
 const { sendSuccess, sendError } = require('../utils/response');
 
@@ -92,7 +96,54 @@ const getSingleOrdine = async (req, res) => {
   }
 };
 
+const confirmOrdinePagamento = async (req, res) => {
+  try {
+    const idOrdine = Number(req.params.id);
+    const { paymentIntentId } = req.body;
+    const guestToken = req.headers['x-guest-token'] || req.body.guestToken || null;
+
+    if (!paymentIntentId) {
+      return sendError(res, 'paymentIntentId obbligatorio', 400);
+    }
+
+    const ordine = await getOrdineCompletoById(idOrdine);
+
+    if (!ordine) {
+      return sendError(res, 'Ordine non trovato', 404);
+    }
+
+    if (ordine.idCliente) {
+      if (!req.user) {
+        return sendError(res, 'Autenticazione richiesta', 401);
+      }
+
+      if (req.user.role !== 'admin' && Number(req.user.id) !== Number(ordine.idCliente)) {
+        return sendError(res, 'Forbidden', 403);
+      }
+    } else {
+      if (!guestToken || guestToken !== ordine.guestToken) {
+        return sendError(res, 'Forbidden', 403);
+      }
+    }
+
+    const result = await confirmPagamentoOrdineService({
+      idOrdine,
+      paymentIntentId,
+    });
+
+    return sendSuccess(res, result);
+  } catch (error) {
+    console.error(error);
+    return sendError(
+      res,
+      error.message || "server error: couldn't confirm ordine pagamento",
+      error.statusCode || 500,
+    );
+  }
+};
+
 module.exports = {
   createCheckoutOrdine,
   getSingleOrdine,
+  confirmOrdinePagamento,
 };
