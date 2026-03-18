@@ -4,12 +4,12 @@ import { ActivatedRoute, Router } from '@angular/router'; // Aggiungi Router
 import { ProductCard } from '../../components/shared/product-card/product-card'; // Importa la tua card
 import { ProductsService } from '../../services/products.service';
 import { CartService } from '../../services/cart-service';
-import { StarIcon } from '../../components/icons/star/star';
+import { CartButton } from '../../components/shared/cart-button/cart-button';
 
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [CommonModule, ProductCard, StarIcon], // Aggiungi ProductCard qui
+  imports: [CommonModule, ProductCard, CartButton], // Aggiungi ProductCard qui
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css',
 })

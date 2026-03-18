@@ -1,12 +1,12 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../../services/cart-service';
-import { StarIcon } from '../../icons/star/star';
+import { CartButton } from '../cart-button/cart-button';
 
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [CommonModule, StarIcon],
+  imports: [CommonModule, CartButton],
   templateUrl: './product-card.html',
   styleUrl: './product-card.css',
 })
