@@ -2,6 +2,7 @@ import { Component, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../../services/cart-service';
 import { CartButton } from '../cart-button/cart-button';
+import { cartStorageKey } from '../../../constants';
 
 @Component({
   selector: 'app-product-card',
@@ -30,20 +31,15 @@ export class ProductCard {
       event.stopPropagation(); // Ferma la navigazione al dettaglio
     }
 
-    // cambia stile bottone quando si aggiunge al carrello
-    this.addedToCart.set(true);
-
-    setTimeout(() => {
-      this.addedToCart.set(false);
-    }, 1500);
-
     const currentItem = this.product();
     const existingItem = this.cartService.items().find((i) => i.id === currentItem.id);
 
     if (existingItem) {
       this.cartService.updateQty(currentItem.id, existingItem.stock + 1);
     } else {
-      this.cartService.items.set([...this.cartService.items(), { ...currentItem, stock: 1 }]);
+      const newCart = [...this.cartService.items(), { ...currentItem, stock: 1 }];
+      this.cartService.items.set(newCart);
+      localStorage.setItem(cartStorageKey, JSON.stringify(newCart));
     }
 
     this.cartEvent.emit(currentItem);

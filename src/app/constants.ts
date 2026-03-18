@@ -8,3 +8,4 @@ export enum roles {
 // fai riferimento a questo per evitare errori nel selezionare gli elementi
 // all'interno del localStorage
 export const localStorageKey = 'user';
+export const cartStorageKey = 'cart';

@@ -2,12 +2,14 @@ import { inject, Injectable, resource, signal } from '@angular/core';
 import { baseApiUrl, localStorageKey, roles } from '../constants';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
+import { CartService } from './cart-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   credentials = signal<Credentials | null>(null);
+  cartService = inject(CartService);
   router = inject(Router);
 
   user = resource<Session | null, Credentials | null>({
@@ -77,7 +79,8 @@ export class AuthService {
 
   logout() {
     this.credentials.set(null);
-    localStorage.removeItem(localStorageKey);
+    this.cartService.clear();
+    localStorage.clear();
     this.router.navigate(['']);
   }
 
