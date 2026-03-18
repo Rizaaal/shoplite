@@ -1,0 +1,25 @@
+
+
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.8rem 0 0.8rem 0;
+  background-color: rgb(27, 221, 98);
+  border-radius: 0.5rem;
+  border-width: 0px;
+  color: white;
+  font-weight: 600;
+  gap: 5px;
+}
+
+button svg {
+  width: 1.2rem;
+  color: white;
+}
+
+.added {
+  background-color: rgb(190, 190, 0);
+  transition: background-color .4s;
+}
