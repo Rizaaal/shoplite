@@ -1,6 +1,7 @@
 const mysql = require('mysql2');
 const fs = require('fs');
 const path = require('path');
+const { seedProdottiIfEmpty } = require('../seeders/prodottiSeeder');
 
 const config = {
   host: process.env.DB_HOST || 'localhost',
@@ -36,6 +37,8 @@ async function connectDB() {
 
     await initDB('../shoplite.sql');
     console.log('Init DB completata');
+
+    await seedProdottiIfEmpty(pool); // 👈 qui
   } catch (err) {
     console.error('Errore connessione o init DB:', err);
   }
