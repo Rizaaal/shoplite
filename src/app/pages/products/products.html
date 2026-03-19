@@ -71,14 +71,20 @@
 
       <main class="col-lg-9">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-4">
-          <div class="col" *ngFor="let product of filteredProducts">
-            <app-product-card
-              [product]="product"
-              (click)="goToDetail(product.id)"
-              style="cursor: pointer; display: block"
-            >
-            </app-product-card>
-          </div>
+          @if (productsService.products.isLoading()) {
+            <p>... Caricamento</p>
+          } @else if (productsService.products.error()) {
+            <p>Errore</p>
+          } @else {
+            <div class="col" *ngFor="let product of filteredProducts">
+              <app-product-card
+                [product]="product"
+                (click)="goToDetail(product.id)"
+                style="cursor: pointer; display: block"
+              >
+              </app-product-card>
+            </div>
+          }
         </div>
       </main>
     </div>
