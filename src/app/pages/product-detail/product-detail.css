@@ -1,4 +1,9 @@
 /* Pagina totale */
+
+h1 {
+  text-transform: capitalize;
+}
+
 .product-page {
   background-color: #ffffff; 
   padding: 60px 0;
@@ -81,7 +86,7 @@ h1 {
   gap: 8px;
   font-weight: 600;
   font-size: 0.95rem;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
 }
 
 .status-dot {
@@ -106,6 +111,9 @@ h1 {
   margin-bottom: 40px;
 }
 
+description-text::first-letter {
+  text-transform: uppercase;
+}
 
 .add-btn {
   background-color: rgb(27, 221, 98);
@@ -139,6 +147,11 @@ h1 {
 .added {
   background-color: rgb(190, 190, 0);
   transition: background-color .4s;
+}
+
+.product-container {
+  display: flex;
+  gap: 1rem;
 }
 
 /* Responsive */
