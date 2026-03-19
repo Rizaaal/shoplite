@@ -20,5 +20,7 @@ export class Navbar {
     this.isLogged.set(false);
   }
 
-  cartCount = computed(() => this.cartService.items().reduce((acc, item) => acc + item.stock, 0));
+  cartCount = computed(() =>
+    this.cartService.items().reduce((acc, item) => acc + item.quantity, 0),
+  );
 }

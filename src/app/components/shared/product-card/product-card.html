@@ -46,6 +46,10 @@
       </p>
     </div>
 
-    <app-cart-button [isdisabled]="!product().stock" (click)="addToCart($event)" />
+    <app-cart-button
+      [isdisabled]="!product().stock || isMaxQuantityReached()"
+      [class.disabled-btn]="!product().stock || isMaxQuantityReached()"
+      (click)="addToCart($event)"
+    />
   </div>
 </article>
