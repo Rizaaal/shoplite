@@ -25,6 +25,7 @@ p {
 
 .statistic {
   display: flex;
+  text-align: center;
   gap: 3rem;
 }
 
