@@ -5,7 +5,7 @@
         <p class="page-eyebrow">Area amministrazione</p>
         <h1 class="page-title">Gestione prodotti</h1>
         <p class="page-description">
-          Crea nuovi prodotti, controlla l’anteprima e consulta rapidamente l’elenco completo.
+          Crea nuovi prodotti, modificali, eliminali e controlla rapidamente l’anteprima.
         </p>
       </div>
 
@@ -21,17 +21,35 @@
     <section class="editor-grid">
       <div class="editor-card">
         <div class="section-header">
-          <h2>Nuovo prodotto</h2>
-          <p>Compila i campi e carica un’immagine.</p>
+          <h2>{{ isEditMode() ? 'Modifica prodotto' : 'Nuovo prodotto' }}</h2>
+          <p>
+            {{
+              isEditMode()
+                ? 'Aggiorna i campi del prodotto selezionato.'
+                : 'Compila i campi e carica un’immagine.'
+            }}
+          </p>
         </div>
 
-        <app-prodotto-form [loading]="loading()" (createProduct)="handleCreateProduct($event)" />
+        <app-prodotto-form
+          [loading]="loading()"
+          [product]="selectedProduct()"
+          [isEditMode]="isEditMode()"
+          (saveProduct)="handleSaveProduct($event)"
+          (cancelEdit)="cancelEdit()"
+        />
       </div>
 
       <div class="editor-card preview-card">
         <div class="section-header">
           <h2>Anteprima</h2>
-          <p>Qui vedi l’ultimo prodotto creato.</p>
+          <p>
+            {{
+              selectedProduct()
+                ? 'Anteprima del prodotto in modifica.'
+                : 'Qui vedi l’ultimo prodotto creato o selezionato.'
+            }}
+          </p>
         </div>
 
         <app-prodotto-preview [product]="product()" />
@@ -44,7 +62,12 @@
         <p>{{ products().length }} prodotti presenti in catalogo</p>
       </div>
 
-      <app-prodotti-list [products]="products()" />
+      <app-prodotti-list
+        [products]="products()"
+        [loading]="loading()"
+        (editProduct)="handleEditProduct($event)"
+        (deleteProduct)="handleDeleteProduct($event)"
+      />
     </section>
   </div>
 </main>

@@ -38,6 +38,28 @@ export class ProductsService {
     },
   });
 
+  private getToken(): string {
+    const sessionRaw = localStorage.getItem(localStorageKey);
+    const token = sessionRaw ? JSON.parse(sessionRaw).token : null;
+
+    if (!token) {
+      throw new Error('Token mancante');
+    }
+
+    return token;
+  }
+
+  async getProductById(id: number): Promise<Product> {
+    const response = await fetch(`${baseApiUrl}/prodotti/${id}`);
+
+    if (!response.ok) {
+      throw new Error('Non è stato possibile caricare il prodotto.');
+    }
+
+    const result = await response.json();
+    return result?.data ?? result;
+  }
+
   async uploadProductImage(file: File): Promise<{ url: string; public_id?: string }> {
     const formData = new FormData();
     formData.append('file', file);
@@ -53,17 +75,11 @@ export class ProductsService {
       throw new Error("L'upload dell'immagine non ha restituito un URL valido.");
     }
 
-    this.products.reload();
     return { url, public_id };
   }
 
   async createProduct(payload: FormProduct): Promise<Product> {
-    const sessionRaw = localStorage.getItem(localStorageKey);
-    const token = sessionRaw ? JSON.parse(sessionRaw).token : null;
-
-    if (!token) {
-      throw new Error('Token mancante');
-    }
+    const token = this.getToken();
 
     const response = await fetch(`${baseApiUrl}/prodotti`, {
       method: 'POST',
@@ -81,9 +97,52 @@ export class ProductsService {
     }
 
     const result = await response.json();
-    console.log('CREATE PRODUCT RESPONSE:', result);
+    this.products.reload();
+
+    return result?.data ?? result;
+  }
+
+  async updateProduct(id: number, payload: Partial<FormProduct>): Promise<Product> {
+    const token = this.getToken();
+
+    const response = await fetch(`${baseApiUrl}/prodotti/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.json().catch(() => null);
+      console.log('UPDATE PRODUCT RESPONSE ERROR:', errorBody);
+      throw new Error('Errore durante l’aggiornamento del prodotto.');
+    }
+
+    const result = await response.json();
+    this.products.reload();
+
+    return result?.data ?? result;
+  }
+
+  async deleteProduct(id: number): Promise<boolean> {
+    const token = this.getToken();
+
+    const response = await fetch(`${baseApiUrl}/prodotti/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.json().catch(() => null);
+      console.log('DELETE PRODUCT RESPONSE ERROR:', errorBody);
+      throw new Error('Errore durante l’eliminazione del prodotto.');
+    }
 
     this.products.reload();
-    return result?.data ?? result;
+    return true;
   }
 }

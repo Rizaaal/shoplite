@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Product } from '../../shared/product-card/product-card';
 
@@ -10,15 +18,19 @@ import { Product } from '../../shared/product-card/product-card';
   templateUrl: './prodotto-form.html',
   styleUrl: './prodotto-form.css',
 })
-export class ProdottoFormComponent {
+export class ProdottoFormComponent implements OnChanges {
   private fb = inject(FormBuilder);
 
   @Input() loading = false;
+  @Input() product: Product | null = null;
+  @Input() isEditMode = false;
 
-  @Output() createProduct = new EventEmitter<{
+  @Output() saveProduct = new EventEmitter<{
     formData: Omit<Product, 'id'>;
     file: File | null;
   }>();
+
+  @Output() cancelEdit = new EventEmitter<void>();
 
   file: File | null = null;
   fileName = '';
@@ -32,6 +44,26 @@ export class ProdottoFormComponent {
   });
 
   categories = ['GPU', 'Memoria', 'Accessori', 'Case', 'CPU', 'Scheda Madre'];
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['product']) {
+      if (this.product) {
+        this.form.patchValue({
+          nome: this.product.nome,
+          descrizione: this.product.descrizione,
+          prezzo: this.product.prezzo,
+          stock: this.product.stock,
+          categoria: this.product.categoria,
+        });
+
+        this.file = null;
+        this.fileName = '';
+        this.form.markAsPristine();
+      } else {
+        this.resetForm();
+      }
+    }
+  }
 
   onFileChange(e: Event) {
     const input = e.target as HTMLInputElement;
@@ -55,13 +87,35 @@ export class ProdottoFormComponent {
       prezzo: Number(v.prezzo),
       stock: Number(v.stock),
       categoria: v.categoria!,
-      image: '',
+      image: this.product?.image ?? '',
     };
 
-    this.createProduct.emit({
+    this.saveProduct.emit({
       formData: payload,
       file: this.file,
     });
+
+    if (!this.isEditMode) {
+      this.resetForm();
+    }
+  }
+
+  onCancelEdit() {
+    this.resetForm();
+    this.cancelEdit.emit();
+  }
+
+  resetForm() {
+    this.form.reset({
+      nome: '',
+      descrizione: '',
+      prezzo: 0,
+      stock: 0,
+      categoria: '',
+    });
+
+    this.file = null;
+    this.fileName = '';
   }
 
   hasError(field: 'nome' | 'descrizione' | 'prezzo' | 'stock' | 'categoria'): boolean {

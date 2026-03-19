@@ -115,6 +115,44 @@
   color: #64748b;
 }
 
+.product-list-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+}
+
+.btn-card-action {
+  border: none;
+  border-radius: 12px;
+  padding: 0.8rem 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-card-action:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-card-edit {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.btn-card-edit:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.btn-card-delete {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.btn-card-delete:hover:not(:disabled) {
+  background: #fecaca;
+}
 @media (max-width: 1100px) {
   .products-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

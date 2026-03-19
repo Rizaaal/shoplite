@@ -66,9 +66,16 @@
     <label for="image">Immagine prodotto</label>
 
     <label for="image" class="upload-box">
-      <span class="upload-title">Carica immagine</span>
+      <span class="upload-title">
+        {{ isEditMode ? 'Sostituisci immagine' : 'Carica immagine' }}
+      </span>
       <span class="upload-subtitle">
-        {{ fileName || 'PNG, JPG, WEBP. Seleziona un file dal dispositivo' }}
+        {{
+          fileName ||
+            (isEditMode
+              ? 'Nessun nuovo file selezionato. L’immagine attuale verrà mantenuta.'
+              : 'PNG, JPG, WEBP. Seleziona un file dal dispositivo')
+        }}
       </span>
     </label>
 
@@ -81,7 +88,27 @@
     />
   </div>
 
-  <button type="submit" class="btn-submit" [disabled]="loading">
-    {{ loading ? 'Creazione in corso...' : 'Crea prodotto' }}
-  </button>
+  <div class="form-actions">
+    <button type="submit" class="btn-submit" [disabled]="loading">
+      {{
+        loading
+          ? isEditMode
+            ? 'Salvataggio in corso...'
+            : 'Creazione in corso...'
+          : isEditMode
+            ? 'Salva modifiche'
+            : 'Crea prodotto'
+      }}
+    </button>
+
+    <button
+      *ngIf="isEditMode"
+      type="button"
+      class="btn-cancel"
+      [disabled]="loading"
+      (click)="onCancelEdit()"
+    >
+      Annulla modifica
+    </button>
+  </div>
 </form>

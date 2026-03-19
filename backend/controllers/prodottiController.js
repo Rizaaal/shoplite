@@ -3,6 +3,7 @@ const {
   getProdottoById,
   getProdottiByCategoria,
   createProdotto,
+  updateProdottoById,
   deleteProdottoById,
 } = require('../services/prodottiService');
 const { sendSuccess, sendError } = require('../utils/response');
@@ -73,6 +74,38 @@ const addProdotto = async (req, res) => {
   }
 };
 
+const updateProdotto = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!id || Number.isNaN(id)) {
+      return sendError(res, 'ID prodotto non valido', 400);
+    }
+
+    const existingProdotto = await getProdottoById(id);
+
+    if (!existingProdotto) {
+      return sendError(res, 'Prodotto non trovato', 404);
+    }
+
+    const { nome, descrizione, prezzo, stock, categoria, image } = req.body;
+
+    const updatedProdotto = await updateProdottoById(id, {
+      nome,
+      descrizione,
+      prezzo,
+      stock,
+      categoria,
+      image,
+    });
+
+    return sendSuccess(res, updatedProdotto);
+  } catch (error) {
+    console.error(error);
+    return sendError(res, "server error: couldn't update prodotto", 500);
+  }
+};
+
 const removeProdotto = async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -94,5 +127,6 @@ module.exports = {
   getSingleProdotto,
   getProdottiByCategoriaController,
   addProdotto,
+  updateProdotto,
   removeProdotto,
 };

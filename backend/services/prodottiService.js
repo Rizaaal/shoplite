@@ -105,6 +105,38 @@ const createProdotto = async ({
   return getProdottoById(result.insertId);
 };
 
+const updateProdottoById = async (id, data) => {
+  const currentProdotto = await getProdottoById(id);
+
+  if (!currentProdotto) {
+    return null;
+  }
+
+  const nome = data.nome ?? currentProdotto.nome;
+  const descrizione = data.descrizione ?? currentProdotto.descrizione;
+  const prezzo = data.prezzo ?? currentProdotto.prezzo;
+  const stock = data.stock ?? currentProdotto.stock;
+  const categoria = data.categoria ?? currentProdotto.categoria;
+  const image = data.image ?? currentProdotto.image;
+
+  await db.query(
+    `
+    UPDATE prodotti
+    SET
+      nome = ?,
+      descrizione = ?,
+      prezzo = ?,
+      stock = ?,
+      categoria = ?,
+      image = ?
+    WHERE id_prodotto = ?
+    `,
+    [nome, descrizione, prezzo, stock, categoria, image, id],
+  );
+
+  return getProdottoById(id);
+};
+
 const deleteProdottoById = async (id) => {
   const [result] = await db.query('DELETE FROM prodotti WHERE id_prodotto = ?', [id]);
 
@@ -116,5 +148,6 @@ module.exports = {
   getProdottoById,
   getProdottiByCategoria,
   createProdotto,
+  updateProdottoById,
   deleteProdottoById,
 };

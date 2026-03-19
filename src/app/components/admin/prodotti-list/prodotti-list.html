@@ -16,6 +16,26 @@
       <div class="product-list-footer">
         <span class="product-list-price">€ {{ p.prezzo | number: '1.2-2' }}</span>
       </div>
+
+      <div class="product-list-actions">
+        <button
+          type="button"
+          class="btn-card-action btn-card-edit"
+          [disabled]="loading"
+          (click)="onEdit(p)"
+        >
+          Modifica
+        </button>
+
+        <button
+          type="button"
+          class="btn-card-action btn-card-delete"
+          [disabled]="loading"
+          (click)="onDelete(p)"
+        >
+          Elimina
+        </button>
+      </div>
     </div>
   </article>
 </div>
