@@ -65,3 +65,11 @@ CLOUDINARY_CLOUD_NAME
 
 A questo punto avviare il dev server con `npm run dev`.
 
+## Utilizzo
+utente admin:
+email: verdi@mail.com
+password: 1234
+
+Utente normale:
+email: giggio@mail.com
+password: 123456
