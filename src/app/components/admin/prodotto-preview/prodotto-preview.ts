@@ -7,6 +7,7 @@ import { Product } from '../../shared/product-card/product-card';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './prodotto-preview.html',
+  styleUrl: './prodotto-preview.css',
 })
 export class ProdottoPreviewComponent {
   @Input() product: Product | null = null;

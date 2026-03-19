@@ -12,15 +12,18 @@ export class AuthService {
   cartService = inject(CartService);
   router = inject(Router);
 
-  user = resource<Session | null, Credentials | null>({
+  cliente = resource<Session | null, Credentials | null>({
     params: () => this.credentials(),
     loader: async ({ params }) => {
-      if (!params) return null;
+      if (!params) {
+        const localStorageSession = localStorage.getItem(localStorageKey);
+        return localStorageSession ? JSON.parse(localStorageSession) : null;
+      }
 
       const localStorageSession = localStorage.getItem(localStorageKey);
 
       if (localStorageSession) {
-        return JSON.parse(localStorageSession);
+        return JSON.parse(localStorageSession) as Session;
       }
 
       const response = await fetch(`${baseApiUrl}/auth/login`, {
@@ -36,12 +39,16 @@ export class AuthService {
       const session = await response.json();
 
       const normalizedSession: Session = {
-        user: session.user ?? session.data?.user ?? null,
+        cliente: session.cliente ?? session.data?.cliente ?? null,
         token: session.token ?? session.data?.token ?? '',
       };
 
       if (!normalizedSession.token) {
         throw new Error('Token non trovato nella response di login');
+      }
+
+      if (!normalizedSession.cliente) {
+        throw new Error('Cliente non trovato nella response di login');
       }
 
       localStorage.setItem(localStorageKey, JSON.stringify(normalizedSession));
@@ -68,13 +75,19 @@ export class AuthService {
     return result?.data ?? result;
   }
 
-  getToken(): string | null {
+  getSession(): Session | null {
     const localStorageSession = localStorage.getItem(localStorageKey);
+    return localStorageSession ? (JSON.parse(localStorageSession) as Session) : null;
+  }
 
-    if (!localStorageSession) return null;
+  getToken(): string | null {
+    const session = this.getSession();
+    return session?.token ?? null;
+  }
 
-    const session: Session = JSON.parse(localStorageSession);
-    return session.token ?? null;
+  getCliente(): Cliente | null {
+    const session = this.getSession();
+    return session?.cliente ?? null;
   }
 
   logout() {
@@ -85,34 +98,31 @@ export class AuthService {
   }
 
   isLogged(): boolean {
-    return !!localStorage.getItem(localStorageKey);
+    const session = this.getSession();
+    return !!session?.token;
   }
 
-  isAdmin() {
-    const localStorageValue = localStorage.getItem(localStorageKey);
+  isAdmin(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
 
-    // se non esiste sicuramente non è admin
-    if (!localStorageValue) return false;
-
-    // ottieni i dati dell'utente loggato
-    const { token } = JSON.parse(localStorageValue);
-    const userData: User = jwtDecode(token);
-
-    return userData.role === roles.admin;
+    const tokenData: TokenPayload = jwtDecode(token);
+    return tokenData.role === roles.admin;
   }
 }
 
-export type User = {
+export type Cliente = {
+  id?: number;
   nome: string;
   cognome: string;
   email: string;
   indirizzo: string;
-  password: string;
+  password?: string;
   role: roles.user | roles.admin;
 };
 
 export type Session = {
-  user: User | null;
+  cliente: Cliente | null;
   token: string;
 };
 
@@ -134,4 +144,15 @@ export type RegisterResponse = {
   role: roles.user | roles.admin;
 };
 
-type Credentials = Pick<User, 'email' | 'password'>;
+export type TokenPayload = {
+  id?: number;
+  nome: string;
+  cognome: string;
+  email: string;
+  indirizzo?: string;
+  role: roles.user | roles.admin;
+  iat?: number;
+  exp?: number;
+};
+
+type Credentials = Pick<Cliente, 'email' | 'password'>;

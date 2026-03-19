@@ -24,8 +24,8 @@ export class Login {
       // salta l'effetto se non abbiamo chiamato onLogin
       if (!this.authService.credentials()) return;
 
-      if (this.authService.user.hasValue()) {
-        const user = JSON.stringify(this.authService.user.value());
+      if (this.authService.cliente.hasValue()) {
+        const user = JSON.stringify(this.authService.cliente.value());
         localStorage.setItem(localStorageKey, user);
         this.router.navigate(['']);
       }

@@ -1,14 +1,28 @@
-<div *ngIf="product; else empty">
-  <img [src]="product.image || ''" width="200" />
+<div *ngIf="product; else empty" class="preview-wrapper">
+  <div class="preview-image-box">
+    <img [src]="product.image || ''" [alt]="product.nome" />
+  </div>
 
-  <h2>{{ product.nome }}</h2>
-  <p>{{ product.descrizione }}</p>
+  <div class="preview-content">
+    <div class="preview-top">
+      <span class="preview-category">{{ product.categoria }}</span>
+      <span class="preview-stock">Stock: {{ product.stock }}</span>
+    </div>
 
-  <p>€ {{ product.prezzo }}</p>
-  <p>{{ product.categoria }}</p>
-  <p>Stock: {{ product.stock }}</p>
+    <h3 class="preview-title">{{ product.nome }}</h3>
+
+    <p class="preview-description">{{ product.descrizione }}</p>
+
+    <div class="preview-footer">
+      <span class="preview-price">€ {{ product.prezzo | number: '1.2-2' }}</span>
+    </div>
+  </div>
 </div>
 
 <ng-template #empty>
-  <p>Nessuna anteprima</p>
+  <div class="preview-empty">
+    <div class="preview-empty-icon">🖼️</div>
+    <h3>Nessuna anteprima</h3>
+    <p>L’anteprima del prodotto creato apparirà qui.</p>
+  </div>
 </ng-template>

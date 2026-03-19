@@ -1,16 +1,28 @@
-<div *ngIf="products.length; else empty">
-  <div *ngFor="let p of products" class="border p-2">
-    <img [src]="p.image || ''" width="150" />
+<div *ngIf="products.length; else empty" class="products-grid">
+  <article *ngFor="let p of products" class="product-list-card">
+    <div class="product-list-image-box">
+      <img [src]="p.image || ''" [alt]="p.nome" />
+    </div>
 
-    <h3>{{ p.nome }}</h3>
-    <p>{{ p.descrizione }}</p>
+    <div class="product-list-content">
+      <div class="product-list-top">
+        <span class="product-list-category">{{ p.categoria }}</span>
+        <span class="product-list-stock">Stock: {{ p.stock }}</span>
+      </div>
 
-    <p>€ {{ p.prezzo }}</p>
-    <p>{{ p.categoria }}</p>
-    <p>Stock: {{ p.stock }}</p>
-  </div>
+      <h3 class="product-list-title">{{ p.nome }}</h3>
+      <p class="product-list-description">{{ p.descrizione }}</p>
+
+      <div class="product-list-footer">
+        <span class="product-list-price">€ {{ p.prezzo | number: '1.2-2' }}</span>
+      </div>
+    </div>
+  </article>
 </div>
 
 <ng-template #empty>
-  <p>Nessun prodotto</p>
+  <div class="products-empty-state">
+    <h3>Nessun prodotto</h3>
+    <p>Non ci sono ancora prodotti da mostrare.</p>
+  </div>
 </ng-template>

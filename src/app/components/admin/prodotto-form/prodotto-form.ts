@@ -8,6 +8,7 @@ import { Product } from '../../shared/product-card/product-card';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './prodotto-form.html',
+  styleUrl: './prodotto-form.css',
 })
 export class ProdottoFormComponent {
   private fb = inject(FormBuilder);
@@ -20,19 +21,24 @@ export class ProdottoFormComponent {
   }>();
 
   file: File | null = null;
+  fileName = '';
 
   form = this.fb.group({
     nome: ['', Validators.required],
     descrizione: ['', Validators.required],
-    prezzo: [0, Validators.required],
-    stock: [0, Validators.required],
+    prezzo: [0, [Validators.required, Validators.min(0.01)]],
+    stock: [0, [Validators.required, Validators.min(0)]],
     categoria: ['', Validators.required],
   });
 
   categories = ['GPU', 'Memoria', 'Accessori', 'Case', 'CPU', 'Scheda Madre'];
 
-  onFileChange(e: any) {
-    this.file = e.target.files[0];
+  onFileChange(e: Event) {
+    const input = e.target as HTMLInputElement;
+    const selectedFile = input.files?.[0] ?? null;
+
+    this.file = selectedFile;
+    this.fileName = selectedFile?.name ?? '';
   }
 
   submit() {
@@ -56,5 +62,10 @@ export class ProdottoFormComponent {
       formData: payload,
       file: this.file,
     });
+  }
+
+  hasError(field: 'nome' | 'descrizione' | 'prezzo' | 'stock' | 'categoria'): boolean {
+    const control = this.form.get(field);
+    return !!control && control.invalid && (control.dirty || control.touched);
   }
 }

@@ -7,6 +7,7 @@ import { Product } from '../../shared/product-card/product-card';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './prodotti-list.html',
+  styleUrl: './prodotti-list.css',
 })
 export class ProdottiListComponent {
   @Input() products: Product[] = [];

@@ -1,0 +1,143 @@
+.admin-products-page {
+  min-height: 100vh;
+  background: #f8fafc;
+  padding: 2rem 0 3rem;
+}
+
+.admin-products-container {
+  width: min(1200px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.page-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+  border: 1px solid #dbeafe;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.page-eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #2563eb;
+}
+
+.page-title {
+  margin: 0;
+  font-size: clamp(1.9rem, 2.5vw, 2.5rem);
+  line-height: 1.1;
+  color: #0f172a;
+}
+
+.page-description {
+  margin: 0.75rem 0 0;
+  max-width: 680px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.btn-back {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 12px;
+  padding: 0.85rem 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-back:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.page-alert-error {
+  margin-bottom: 1.5rem;
+  padding: 0.95rem 1rem;
+  border-radius: 12px;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  font-weight: 500;
+}
+
+.editor-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  gap: 1.5rem;
+  align-items: start;
+  margin-bottom: 1.5rem;
+}
+
+.editor-card,
+.list-section {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+}
+
+.preview-card {
+  position: sticky;
+  top: 1.5rem;
+}
+
+.section-header {
+  margin-bottom: 1.25rem;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #0f172a;
+}
+
+.section-header p {
+  margin: 0.45rem 0 0;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+@media (max-width: 992px) {
+  .editor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .preview-card {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-products-container {
+    width: min(100%, calc(100% - 1rem));
+  }
+
+  .page-hero,
+  .editor-card,
+  .list-section {
+    padding: 1.1rem;
+    border-radius: 16px;
+  }
+
+  .page-hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-back {
+    width: 100%;
+  }
+}

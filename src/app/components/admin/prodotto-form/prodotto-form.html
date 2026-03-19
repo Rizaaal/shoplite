@@ -1,20 +1,87 @@
-<form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
-  <input formControlName="nome" placeholder="Nome prodotto" />
+<form [formGroup]="form" (ngSubmit)="submit()" class="product-form">
+  <div class="form-grid">
+    <div class="field-group">
+      <label for="nome">Nome prodotto</label>
+      <input
+        id="nome"
+        type="text"
+        class="form-input"
+        formControlName="nome"
+        placeholder="Es. RTX 4070 Ventus 2X OC"
+      />
+      <small *ngIf="hasError('nome')" class="field-error">Il nome è obbligatorio</small>
+    </div>
 
-  <textarea formControlName="descrizione" placeholder="Descrizione"></textarea>
+    <div class="field-group">
+      <label for="categoria">Categoria</label>
+      <select id="categoria" class="form-input form-select" formControlName="categoria">
+        <option value="">Seleziona una categoria</option>
+        <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+      </select>
+      <small *ngIf="hasError('categoria')" class="field-error">La categoria è obbligatoria</small>
+    </div>
+  </div>
 
-  <input type="number" formControlName="prezzo" placeholder="Prezzo" />
+  <div class="field-group">
+    <label for="descrizione">Descrizione</label>
+    <textarea
+      id="descrizione"
+      class="form-input form-textarea"
+      formControlName="descrizione"
+      placeholder="Descrivi il prodotto in modo chiaro e sintetico"
+    ></textarea>
+    <small *ngIf="hasError('descrizione')" class="field-error">La descrizione è obbligatoria</small>
+  </div>
 
-  <input type="number" formControlName="stock" placeholder="Stock" />
+  <div class="form-grid">
+    <div class="field-group">
+      <label for="prezzo">Prezzo (€)</label>
+      <input
+        id="prezzo"
+        type="number"
+        class="form-input"
+        formControlName="prezzo"
+        placeholder="0.00"
+        min="0"
+        step="0.01"
+      />
+      <small *ngIf="hasError('prezzo')" class="field-error">Inserisci un prezzo valido</small>
+    </div>
 
-  <select formControlName="categoria">
-    <option value="">Categoria</option>
-    <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
-  </select>
+    <div class="field-group">
+      <label for="stock">Stock</label>
+      <input
+        id="stock"
+        type="number"
+        class="form-input"
+        formControlName="stock"
+        placeholder="0"
+        min="0"
+      />
+      <small *ngIf="hasError('stock')" class="field-error">Inserisci uno stock valido</small>
+    </div>
+  </div>
 
-  <input type="file" (change)="onFileChange($event)" />
+  <div class="field-group">
+    <label for="image">Immagine prodotto</label>
 
-  <button [disabled]="loading">
-    {{ loading ? 'Loading...' : 'Crea prodotto' }}
+    <label for="image" class="upload-box">
+      <span class="upload-title">Carica immagine</span>
+      <span class="upload-subtitle">
+        {{ fileName || 'PNG, JPG, WEBP. Seleziona un file dal dispositivo' }}
+      </span>
+    </label>
+
+    <input
+      id="image"
+      type="file"
+      class="native-file-input"
+      accept="image/*"
+      (change)="onFileChange($event)"
+    />
+  </div>
+
+  <button type="submit" class="btn-submit" [disabled]="loading">
+    {{ loading ? 'Creazione in corso...' : 'Crea prodotto' }}
   </button>
 </form>
