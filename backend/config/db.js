@@ -1,6 +1,8 @@
 const mysql = require('mysql2');
+const fs = require('fs');
+const path = require('path');
 
-const pool = mysql.createPool({
+const config = {
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
@@ -9,16 +11,36 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-});
+};
 
-pool.getConnection((err, connection) => {
-  if (err) {
-    console.error('Errore connessione DB completo:', err);
-    return;
+const pool = mysql.createPool(config).promise();
+
+async function initDB(fileName) {
+  const sqlPath = path.join(__dirname, fileName);
+  const sql = fs.readFileSync(sqlPath, 'utf8');
+  const statements = sql
+    .split(';')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  for (const statement of statements) {
+    await pool.query(statement);
   }
+}
 
-  console.log('MySQL connesso');
-  connection.release();
-});
+async function connectDB() {
+  try {
+    const connection = await pool.getConnection();
+    console.log('MySQL connesso');
+    connection.release();
 
-module.exports = pool.promise();
+    await initDB('../shoplite-2.sql');
+    console.log('Init DB completata');
+  } catch (err) {
+    console.error('Errore connessione o init DB:', err);
+  }
+}
+
+connectDB();
+
+module.exports = pool;

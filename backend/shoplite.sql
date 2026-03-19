@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Creato il: Mar 18, 2026 alle 08:47
+-- Creato il: Mar 19, 2026 alle 17:07
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `shoplite`
 --
+CREATE DATABASE IF NOT EXISTS `shoplite` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `shoplite`;
 
 -- --------------------------------------------------------
 
@@ -27,23 +29,28 @@ SET time_zone = "+00:00";
 -- Struttura della tabella `clienti`
 --
 
-CREATE TABLE `clienti` (
-  `id_cliente` int(11) NOT NULL,
+
+CREATE TABLE IF NOT EXISTS `clienti` (
+  `id_cliente` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
   `cognome` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
   `indirizzo` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `role` enum('user','admin') NOT NULL DEFAULT 'user',
-  `password` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`id_cliente`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `clienti`
 --
 
-INSERT INTO `clienti` (`id_cliente`, `nome`, `cognome`, `email`, `indirizzo`, `created_at`, `role`, `password`) VALUES
-(5, 'Giulio', 'Verdi', 'verdi@mail.com', 'via gabribaldi, 56', '2026-03-17 15:57:57', 'admin', '$2b$10$quiK/KyMGzwzve13u6R4juQB7qYNt0QNGTBScaJOv8I3GHxO/6guG');
+INSERT IGNORE INTO `clienti` (`id_cliente`, `nome`, `cognome`, `email`, `indirizzo`, `created_at`, `role`, `password`) VALUES
+(5, 'Giulio', 'Verdi', 'verdi@mail.com', 'via gabribaldi, 56', '2026-03-17 15:57:57', 'admin', '$2b$10$quiK/KyMGzwzve13u6R4juQB7qYNt0QNGTBScaJOv8I3GHxO/6guG'),
+(6, 'Gabriele', 'Di Grazia', 'gabri@maial.com', '', '2026-03-18 08:55:21', 'user', '$2b$10$diy35.GC3sMsK9jAmyejS.0M2/DogezW7YmL7oLLRGhWAn.z9C/Gi'),
+(7, 'Mario', 'Bianchi', 'mario@bianchi.it', '', '2026-03-18 10:54:36', 'user', '$2b$10$OZmp57ZEBSV69NdPvU1xw.Va/vdegUaCp5y.IbwvbdEWX0dqUXCEu');
 
 -- --------------------------------------------------------
 
@@ -51,14 +58,36 @@ INSERT INTO `clienti` (`id_cliente`, `nome`, `cognome`, `email`, `indirizzo`, `c
 -- Struttura della tabella `dettaglio_ordine`
 --
 
-CREATE TABLE `dettaglio_ordine` (
-  `id_dettaglio` int(11) NOT NULL,
+DROP TABLE IF EXISTS `dettaglio_ordine`;
+CREATE TABLE IF NOT EXISTS `dettaglio_ordine` (
+  `id_dettaglio` int(11) NOT NULL AUTO_INCREMENT,
   `id_ordine` int(11) NOT NULL,
   `id_prodotto` int(11) NOT NULL,
   `quantita` int(11) NOT NULL,
   `prezzo_unitario` decimal(10,2) NOT NULL,
-  `subtotale` decimal(10,2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `subtotale` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id_dettaglio`),
+  KEY `fk_ordine` (`id_ordine`),
+  KEY `fk_prodotto` (`id_prodotto`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Svuota la tabella prima dell'inserimento `dettaglio_ordine`
+--
+
+TRUNCATE TABLE `dettaglio_ordine`;
+--
+-- Dump dei dati per la tabella `dettaglio_ordine`
+--
+
+INSERT IGNORE INTO `dettaglio_ordine` (`id_dettaglio`, `id_ordine`, `id_prodotto`, `quantita`, `prezzo_unitario`, `subtotale`) VALUES
+(1, 1, 38, 1, 200.00, 200.00),
+(2, 2, 38, 1, 200.00, 200.00),
+(3, 3, 38, 1, 200.00, 200.00),
+(4, 4, 38, 1, 200.00, 200.00),
+(5, 5, 38, 2, 200.00, 400.00),
+(6, 6, 38, 1, 200.00, 200.00),
+(7, 7, 36, 1, 130.00, 130.00);
 
 -- --------------------------------------------------------
 
@@ -66,29 +95,65 @@ CREATE TABLE `dettaglio_ordine` (
 -- Struttura della tabella `dettaglio_pagamento`
 --
 
-CREATE TABLE `dettaglio_pagamento` (
-  `id_dettaglio_pagamento` int(11) NOT NULL,
+DROP TABLE IF EXISTS `dettaglio_pagamento`;
+CREATE TABLE IF NOT EXISTS `dettaglio_pagamento` (
+  `id_dettaglio_pagamento` int(11) NOT NULL AUTO_INCREMENT,
   `id_ordine` int(11) NOT NULL,
   `id_pagamento` int(11) NOT NULL,
-  `riferimento_transazione` varchar(150) DEFAULT NULL
+  `riferimento_transazione` varchar(150) DEFAULT NULL,
+  PRIMARY KEY (`id_dettaglio_pagamento`),
+  KEY `fk_ordine_pagamento` (`id_ordine`),
+  KEY `fk_pagamento` (`id_pagamento`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Svuota la tabella prima dell'inserimento `dettaglio_pagamento`
+--
+
+TRUNCATE TABLE `dettaglio_pagamento`;
 -- --------------------------------------------------------
 
 --
 -- Struttura della tabella `ordini`
 --
 
-CREATE TABLE `ordini` (
-  `id_ordine` int(11) NOT NULL,
+DROP TABLE IF EXISTS `ordini`;
+CREATE TABLE IF NOT EXISTS `ordini` (
+  `id_ordine` int(11) NOT NULL AUTO_INCREMENT,
   `id_cliente` int(11) NOT NULL,
   `data_ordine` datetime DEFAULT current_timestamp(),
   `stato` enum('in_attesa','pagato','spedito','annullato') DEFAULT 'in_attesa',
   `totale` decimal(10,2) DEFAULT 0.00,
   `indirizzo_spedizione` varchar(255) NOT NULL,
   `postal_code` varchar(20) NOT NULL,
-  `city` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `city` varchar(100) NOT NULL,
+  `email_cliente` varchar(255) NOT NULL,
+  `nome_cliente` varchar(100) DEFAULT NULL,
+  `cognome_cliente` varchar(100) DEFAULT NULL,
+  `guest_token` varchar(100) DEFAULT NULL,
+  `stripe_payment_intent_id` varchar(255) DEFAULT NULL,
+  `payment_status` varchar(50) NOT NULL DEFAULT 'requires_payment',
+  PRIMARY KEY (`id_ordine`),
+  KEY `fk_cliente_ordine` (`id_cliente`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Svuota la tabella prima dell'inserimento `ordini`
+--
+
+TRUNCATE TABLE `ordini`;
+--
+-- Dump dei dati per la tabella `ordini`
+--
+
+INSERT IGNORE INTO `ordini` (`id_ordine`, `id_cliente`, `data_ordine`, `stato`, `totale`, `indirizzo_spedizione`, `postal_code`, `city`, `email_cliente`, `nome_cliente`, `cognome_cliente`, `guest_token`, `stripe_payment_intent_id`, `payment_status`) VALUES
+(1, 6, '2026-03-18 18:02:04', 'in_attesa', 200.00, 'via ciccio, 89', '95123', 'Roma', 'gabri@maial.com', 'Gabriele', 'Di Grazia', NULL, 'pi_3TCNTsA7OuLNQsok01kkThLH', 'requires_payment'),
+(2, 6, '2026-03-18 18:02:56', 'in_attesa', 200.00, 'via ciccio, 89', '95123', 'Roma', 'gabri@maial.com', 'Gabriele', 'Di Grazia', NULL, 'pi_3TCNUiA7OuLNQsok1VRDZn2s', 'requires_payment'),
+(3, 6, '2026-03-18 18:03:29', 'in_attesa', 200.00, 'via ciccio, 89', '95123', 'Roma', 'gabri@maial.com', 'Gabriele', 'Di Grazia', NULL, 'pi_3TCNVFA7OuLNQsok07VcDobS', 'requires_payment'),
+(4, 6, '2026-03-18 18:03:48', 'in_attesa', 200.00, 'via ciccio, 89', '95123', 'Roma', 'gabri@maial.com', 'Gabriele', 'Di Grazia', NULL, 'pi_3TCNVZA7OuLNQsok1k3o39Ne', 'requires_payment'),
+(5, 5, '2026-03-18 18:04:54', 'in_attesa', 400.00, 'via ciccio, 89', '95123', 'Roma', 'verdi@mail.com', 'Giulio', 'Verdi', NULL, 'pi_3TCNWdA7OuLNQsok03coEqWW', 'requires_payment'),
+(6, 5, '2026-03-18 18:11:06', 'in_attesa', 200.00, 'via ciccio, 89', '95123', 'Roma', 'verdi@mail.com', 'Giulio', 'Verdi', NULL, 'pi_3TCNcdA7OuLNQsok0VfPiwZE', 'requires_payment'),
+(7, 5, '2026-03-18 18:26:35', 'pagato', 130.00, 'via ciccio, 89', '95123', 'Roma', 'verdi@mail.com', 'Giulio', 'Verdi', NULL, 'pi_3TCNrbA7OuLNQsok13a0u0JU', 'succeeded');
 
 -- --------------------------------------------------------
 
@@ -96,36 +161,50 @@ CREATE TABLE `ordini` (
 -- Struttura della tabella `pagamenti`
 --
 
-CREATE TABLE `pagamenti` (
-  `id_pagamento` int(11) NOT NULL,
+DROP TABLE IF EXISTS `pagamenti`;
+CREATE TABLE IF NOT EXISTS `pagamenti` (
+  `id_pagamento` int(11) NOT NULL AUTO_INCREMENT,
   `metodo` enum('carta','paypal','bonifico','contrassegno') NOT NULL,
   `importo` decimal(10,2) NOT NULL,
   `stato` enum('in_attesa','completato','fallito','rimborsato') DEFAULT 'in_attesa',
-  `data_pagamento` datetime DEFAULT current_timestamp()
+  `data_pagamento` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id_pagamento`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Svuota la tabella prima dell'inserimento `pagamenti`
+--
+
+TRUNCATE TABLE `pagamenti`;
 -- --------------------------------------------------------
 
 --
 -- Struttura della tabella `prodotti`
 --
 
-CREATE TABLE `prodotti` (
-  `id_prodotto` int(11) NOT NULL,
+DROP TABLE IF EXISTS `prodotti`;
+CREATE TABLE IF NOT EXISTS `prodotti` (
+  `id_prodotto` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(150) NOT NULL,
   `descrizione` text DEFAULT NULL,
   `prezzo` decimal(10,2) NOT NULL,
   `stock` int(11) DEFAULT 0,
   `categoria` varchar(100) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `image` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `image` varchar(255) NOT NULL,
+  PRIMARY KEY (`id_prodotto`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Svuota la tabella prima dell'inserimento `prodotti`
+--
+
+TRUNCATE TABLE `prodotti`;
 --
 -- Dump dei dati per la tabella `prodotti`
 --
 
-INSERT INTO `prodotti` (`id_prodotto`, `nome`, `descrizione`, `prezzo`, `stock`, `categoria`, `created_at`, `image`) VALUES
+INSERT IGNORE INTO `prodotti` (`id_prodotto`, `nome`, `descrizione`, `prezzo`, `stock`, `categoria`, `created_at`, `image`) VALUES
 (1, 'MSI GeForce RTX 4070 Ventus 2X OC', 'Scheda video NVIDIA RTX 4070 con doppio ventilatore Ventus, overclock di fabbrica, 12GB GDDR6X', 599.99, 15, 'GPU', '2026-03-17 15:05:53', 'https://placehold.co/400x300?text=MSI+RTX+4070+Ventus'),
 (2, 'Gigabyte GeForce RTX 4070 Gaming OC', 'Scheda video NVIDIA RTX 4070 con sistema di raffreddamento Gaming OC, 12GB GDDR6X', 609.99, 12, 'GPU', '2026-03-17 15:05:53', 'https://placehold.co/400x300?text=Gigabyte+RTX+4070'),
 (3, 'NVIDIA RTX 4070', 'Scheda video NVIDIA GeForce RTX 4070, 12GB GDDR6X, ray tracing e DLSS 3', 579.99, 20, 'GPU', '2026-03-17 15:05:53', 'https://placehold.co/400x300?text=NVIDIA+RTX+4070'),
@@ -161,93 +240,9 @@ INSERT INTO `prodotti` (`id_prodotto`, `nome`, `descrizione`, `prezzo`, `stock`,
 (33, 'Logitech G915 TKL', 'Tastiera gaming wireless tenkeyless, switch GL low-profile, LIGHTSPEED 2.4GHz, RGB', 199.99, 20, 'Tastiera', '2026-03-17 15:05:53', 'https://placehold.co/400x300?text=Logitech+G915+TKL'),
 (34, 'Razer BlackWidow V4', 'Tastiera gaming meccanica, switch Razer Yellow, tasti macro dedicati, RGB Chroma', 139.99, 22, 'Tastiera', '2026-03-17 15:05:53', 'https://placehold.co/400x300?text=Razer+BlackWidow+V4'),
 (35, 'prodotto', 'Descrizione prodotto.', 599.99, 14, 'GPU', '2026-03-17 16:03:21', 'https://res.cloudinary.com/dbxysr1a6/image/upload/v1773763281/shoplite/prodotti/1773763280434-Schermata%20del%202026-01-19%2019-17-15.png'),
-(36, 'tastiera meccanica', 'una bella tastiera meccanica', 130.00, 1, 'Accessori', '2026-03-17 21:34:50', 'https://res.cloudinary.com/dbxysr1a6/image/upload/v1773783289/shoplite/prodotti/1773783288467-tastiera.jpg');
-
---
--- Indici per le tabelle scaricate
---
-
---
--- Indici per le tabelle `clienti`
---
-ALTER TABLE `clienti`
-  ADD PRIMARY KEY (`id_cliente`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- Indici per le tabelle `dettaglio_ordine`
---
-ALTER TABLE `dettaglio_ordine`
-  ADD PRIMARY KEY (`id_dettaglio`),
-  ADD KEY `fk_ordine` (`id_ordine`),
-  ADD KEY `fk_prodotto` (`id_prodotto`);
-
---
--- Indici per le tabelle `dettaglio_pagamento`
---
-ALTER TABLE `dettaglio_pagamento`
-  ADD PRIMARY KEY (`id_dettaglio_pagamento`),
-  ADD KEY `fk_ordine_pagamento` (`id_ordine`),
-  ADD KEY `fk_pagamento` (`id_pagamento`);
-
---
--- Indici per le tabelle `ordini`
---
-ALTER TABLE `ordini`
-  ADD PRIMARY KEY (`id_ordine`),
-  ADD KEY `fk_cliente_ordine` (`id_cliente`);
-
---
--- Indici per le tabelle `pagamenti`
---
-ALTER TABLE `pagamenti`
-  ADD PRIMARY KEY (`id_pagamento`);
-
---
--- Indici per le tabelle `prodotti`
---
-ALTER TABLE `prodotti`
-  ADD PRIMARY KEY (`id_prodotto`);
-
---
--- AUTO_INCREMENT per le tabelle scaricate
---
-
---
--- AUTO_INCREMENT per la tabella `clienti`
---
-ALTER TABLE `clienti`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT per la tabella `dettaglio_ordine`
---
-ALTER TABLE `dettaglio_ordine`
-  MODIFY `id_dettaglio` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT per la tabella `dettaglio_pagamento`
---
-ALTER TABLE `dettaglio_pagamento`
-  MODIFY `id_dettaglio_pagamento` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT per la tabella `ordini`
---
-ALTER TABLE `ordini`
-  MODIFY `id_ordine` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT per la tabella `pagamenti`
---
-ALTER TABLE `pagamenti`
-  MODIFY `id_pagamento` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT per la tabella `prodotti`
---
-ALTER TABLE `prodotti`
-  MODIFY `id_prodotto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+(36, 'tastiera meccanica', 'una bella tastiera meccanica', 130.00, 0, 'Accessori', '2026-03-17 21:34:50', 'https://res.cloudinary.com/dbxysr1a6/image/upload/v1773783289/shoplite/prodotti/1773783288467-tastiera.jpg'),
+(37, 'GTX 950', 'scheda video media del 2016', 160.00, 50, 'GPU', '2026-03-18 09:23:51', 'https://res.cloudinary.com/dbxysr1a6/image/upload/v1773825830/shoplite/prodotti/1773825829844-gpu.jpg'),
+(38, 'GTX 960', 'scheda video fascia meido alta', 200.00, 40, 'GPU', '2026-03-18 10:55:30', 'https://res.cloudinary.com/dbxysr1a6/image/upload/v1773831329/shoplite/prodotti/1773831328628-gpu.jpg');
 
 --
 -- Limiti per le tabelle scaricate
