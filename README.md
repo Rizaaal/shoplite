@@ -1,5 +1,16 @@
 # Shoplite
 
+## Membri
+Damilola Abiola Wiwoloku - fullstack - 
+Michele Papa - fullstack - 
+Anass - fullstack -
+Gabriele Di Grazia - fullstack - gabrieldigrazia@protonmail.com
+
+## Descrizione
+Semplice e-commerce di articoli di informatica e di tecnologia. Contiene una pagina per filtrare e cercare gli articoli per nome, range di prezzo e categoria. qualsiasi visitatore può comprare gli articoli inserendo i dati della carta di credito, con il pagamento gestito da stripe. Si può anche eseguire la registrazione al sito, in modo da poter salvare le proprie informazioni di pagamento. Gli admin possono gestire gli articoli del sito dal pannello admin, creando e modificando o rimuovendo gli articoli esistenti con un interfaccia facile da utilizzare. Le immagini sono hostate con Cloudnary.
+
+## Istruzioni per l'avvio del progetto
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.1.
 
 ## Development server
@@ -12,21 +23,8 @@ ng serve
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
-## Code scaffolding
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
+### Building
 
 To build the project run:
 
@@ -34,26 +32,36 @@ To build the project run:
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Backend
+Il backend si trova all'interno della cartella di progetto in /backend.
 
-## Running unit tests
+ ```bash
+cd backend
+```
+Quindi installare i pacchetti
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### Inizializzare il DB
+Se il DB non viene inizializzato all'avvio del server,
+avviare un server di sql manualmente, e quindi creare il database `shoplite`.
+Quindi importare il database dal file `shoplite.sql`.
+
+### Variabili d'ambiente
+è necessario un file .env per avviare il DB ed avere le chiavi dei servizi di stripe e cloudinary.
+(i dati del DB possono naturalmente essere cambiati in base alle config del DB)
 
 ```bash
-ng test
+DB_USER=root
+DB_PASSWORD #in XAMPP la pass è vuota
+DB_NAME=shoplite
+DB_PORT=3306
+SECRET_KEY #chiave JWTtoken, inserire un valore qualsiasi
+STRIPE_SECRET_KEY = sk_test_51TAToaA7OuLNQsokYFm5W7GcMq0loiLqfHUcAe7Q56hRmJpcj08h17EjCR6TFHVngN7wZPdaizuUIThmaHD2eq5400bRcfdWD9
+
+# per le chiavi cloudinary contattare il team
+CLOUDINARY_API_KEY  
+CLOUDINARY_API_SECRET  
+CLOUDINARY_CLOUD_NAME 
 ```
 
-## Running end-to-end tests
+A questo punto avviare il dev server con `npm run dev`.
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
