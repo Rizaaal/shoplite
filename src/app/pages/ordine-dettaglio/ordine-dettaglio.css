@@ -144,67 +144,54 @@
   color: #64748b;
 }
 
+/* ========================= */
+/* FIX PRODOTTI (NUOVO) */
+/* ========================= */
+
 .order-products-list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.order-product-row {
+.product-row {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.55rem;
   padding: 1rem 0;
   border-bottom: 1px solid #f1f5f9;
 }
 
-.order-product-row:last-child {
+.product-row:last-child {
   border-bottom: none;
   padding-bottom: 0;
 }
 
-.order-product-left {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  min-width: 0;
-}
-
-.order-product-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
-  background: #eff6ff;
-  color: #2563eb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.order-product-info h3 {
-  margin: 0 0 0.35rem;
+.product-title {
+  margin: 0;
   font-size: 1rem;
+  font-weight: 600;
   color: #0f172a;
 }
 
-.order-product-info p {
-  margin: 0 0 0.25rem;
-  color: #475569;
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.product-info p {
+  margin: 0;
   font-size: 0.95rem;
+  color: #475569;
 }
 
-.order-product-info span {
-  color: #64748b;
-  font-size: 0.9rem;
-}
-
-.order-product-price {
-  font-size: 1.05rem;
+.product-info .subtotal {
   font-weight: 700;
   color: #0f172a;
-  white-space: nowrap;
 }
+
+/* ========================= */
 
 .summary-list,
 .info-block {

@@ -60,13 +60,12 @@
 
           @for (item of order.dettagli; track item.idDettaglio) {
             <div class="product-row">
-              <div>
-                <h3>{{ item.nomeProdotto }}</h3>
+              <h3 class="product-title">{{ item.nomeProdotto }}</h3>
+
+              <div class="product-info">
                 <p>Quantità: {{ item.quantita }}</p>
-              </div>
-              <div class="product-prices">
-                <span>€ {{ item.prezzoUnitario | number: '1.2-2' }}</span>
-                <strong>€ {{ item.subtotale | number: '1.2-2' }}</strong>
+                <p>Prezzo unitario: € {{ item.prezzoUnitario | number: '1.2-2' }}</p>
+                <p class="subtotal">Subtotale: € {{ item.subtotale | number: '1.2-2' }}</p>
               </div>
             </div>
           }
