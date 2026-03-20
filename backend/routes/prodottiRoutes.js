@@ -9,6 +9,7 @@ const {
 } = require('../controllers/prodottiController');
 const { protectedRoute } = require('../middlewares/protectedRoute');
 const { adminOnly } = require('../middlewares/adminOnly');
+const { validateProductCreate } = require('../middlewares/validateProductCreate');
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ router.get('/categoria/:categoria', getProdottiByCategoriaController);
 router.get('/:id', getSingleProdotto);
 
 // Solo admin può creare, modificare o cancellare prodotti
-router.post('/', protectedRoute, adminOnly, addProdotto);
+router.post('/', protectedRoute, adminOnly, validateProductCreate, addProdotto);
 router.patch('/:id', protectedRoute, adminOnly, updateProdotto);
 router.delete('/:id', protectedRoute, adminOnly, removeProdotto);
 
