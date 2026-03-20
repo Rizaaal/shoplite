@@ -4,6 +4,15 @@ import { CommonModule } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { PaymentService } from '../../services/payment';
 
+type PaymentIntentStatus =
+  | 'requires_payment_method'
+  | 'requires_confirmation'
+  | 'requires_action'
+  | 'processing'
+  | 'requires_capture'
+  | 'canceled'
+  | 'succeeded';
+
 type OrderDetail = {
   id: number;
   idCliente: number | null;
@@ -12,7 +21,7 @@ type OrderDetail = {
   cognomeCliente: string | null;
   guestToken: string | null;
   stripePaymentIntentId: string | null;
-  paymentStatus: string;
+  paymentStatus: PaymentIntentStatus;
   dataOrdine: string;
   stato: string;
   totale: number;
@@ -30,6 +39,10 @@ type OrderDetail = {
   }[];
 };
 
+type PaymentMapStatus = {
+  [K in PaymentIntentStatus]: string;
+};
+
 @Component({
   selector: 'app-ordine-dettaglio',
   standalone: true,
@@ -40,6 +53,15 @@ type OrderDetail = {
 export class OrdineDettaglioComponent {
   private route = inject(ActivatedRoute);
   private paymentService = inject(PaymentService);
+  statusMap: PaymentMapStatus = {
+    succeeded: 'Elaborato',
+    processing: 'In elaborazione',
+    canceled: 'Cancellato',
+    requires_action: "Richiede azioni dell'utente",
+    requires_payment_method: 'Metodo di pagamento richiesto',
+    requires_confirmation: 'Conferma richiesta',
+    requires_capture: 'Richiede cattura',
+  };
 
   ordine = signal<OrderDetail | null>(null);
   loading = signal(true);

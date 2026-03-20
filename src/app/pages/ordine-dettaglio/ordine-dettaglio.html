@@ -85,7 +85,7 @@
 
           <div class="info-row">
             <span>Stato pagamento</span>
-            <strong>{{ order.paymentStatus }}</strong>
+            <strong>{{ this.statusMap[order.paymentStatus] }}</strong>
           </div>
 
           <a routerLink="/products" class="back-link mt-3">Continua lo shopping</a>
