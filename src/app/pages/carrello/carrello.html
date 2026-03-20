@@ -66,18 +66,26 @@
 
                 <div class="product-actions">
                   <div class="qty-selector">
-                    <button (click)="decreaseQty(item)" [disabled]="item.stock <= 1 || loading()">
+                    <button
+                      (click)="decreaseQty(item)"
+                      [disabled]="item.quantity <= 1 || loading()"
+                    >
                       −
                     </button>
-                    <span class="qty-num">{{ item.stock }}</span>
-                    <button (click)="increaseQty(item)" [disabled]="loading()">+</button>
+                    <span class="qty-num">{{ item.quantity }}</span>
+                    <button
+                      (click)="increaseQty(item)"
+                      [disabled]="item.quantity >= item.stock || loading()"
+                    >
+                      +
+                    </button>
                   </div>
 
                   <div class="product-price">
                     <span class="unit-price">€ {{ item.prezzo | number: '1.2-2' }}</span>
-                    <span class="total-price"
-                      >€ {{ item.stock * item.prezzo | number: '1.2-2' }}</span
-                    >
+                    <span class="total-price">
+                      € {{ item.quantity * item.prezzo | number: '1.2-2' }}
+                    </span>
                   </div>
                 </div>
               </div>

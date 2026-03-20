@@ -5,8 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
 
-import { CartService } from '../../services/cart-service';
-import { Product } from '../../components/shared/product-card/product-card';
+import { CartService, CartItem } from '../../services/cart-service';
 import { AuthService } from '../../services/auth-service';
 import { PaymentService } from '../../services/payment';
 
@@ -25,7 +24,9 @@ export class Carrello implements AfterViewInit {
 
   cartItems = computed(() => this.cartService.items());
 
-  total = computed(() => this.cartItems().reduce((sum, item) => sum + item.prezzo * item.stock, 0));
+  total = computed(() =>
+    this.cartItems().reduce((sum, item) => sum + item.prezzo * item.quantity, 0),
+  );
 
   stripe = signal<Stripe | null>(null);
   elements = signal<StripeElements | null>(null);
@@ -51,13 +52,15 @@ export class Carrello implements AfterViewInit {
     await this.initStripe();
   }
 
-  increaseQty(item: Product): void {
-    this.cartService.updateQty(item.id, item.stock + 1);
+  increaseQty(item: CartItem): void {
+    if (item.quantity < item.stock) {
+      this.cartService.updateQty(item.id, item.quantity + 1);
+    }
   }
 
-  decreaseQty(item: Product): void {
-    if (item.stock > 1) {
-      this.cartService.updateQty(item.id, item.stock - 1);
+  decreaseQty(item: CartItem): void {
+    if (item.quantity > 1) {
+      this.cartService.updateQty(item.id, item.quantity - 1);
     }
   }
 
@@ -175,7 +178,6 @@ export class Carrello implements AfterViewInit {
       );
 
       const res = await firstValueFrom(this.paymentService.createCheckout(payload));
-
       const checkoutData = (res as any)?.data ?? res;
 
       if (!checkoutData?.clientSecret) {
@@ -184,7 +186,6 @@ export class Carrello implements AfterViewInit {
       }
 
       const { clientSecret, idOrdine, guestToken } = checkoutData;
-
       const billingName = `${this.form().nome} ${this.form().cognome}`.trim();
 
       const result = await stripe.confirmCardPayment(clientSecret, {

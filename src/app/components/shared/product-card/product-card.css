@@ -114,12 +114,6 @@ span {
   margin-right: 4px;
 }
 
-button:disabled {
-  background-color: #E2E8F0;
-  color: #94a3b8;
-  cursor: not-allowed;
-}
-
 .bg-success {
   background-color: #22C55E;
 }
@@ -139,6 +133,17 @@ button:disabled {
 .added {
   background-color: rgb(190, 190, 0);
   transition: background-color .4s;
+}
+
+.disabled-btn {
+  background-color: #9ca3af; /* grigio */
+  border-color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.disabled-btn:hover {
+  background-color: #9ca3af;
 }
 
 @media (max-width: 1200px) {
